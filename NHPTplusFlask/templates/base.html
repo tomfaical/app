@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela Inicial</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <img src="/static/logo.png" alt="Logo" class="logo">
+        <nav class="nav-buttons">
+            <button>Coleta</button>
+            <button>Gráficos</button>
+            <button>Tabelas</button>
+            <button>Área Dev</button>
+        </nav>
+    </header>
+
+    <!-- Body -->
+    <main>
+        <div class="container">
+            <form action="/" method="POST">
+                <input type="text" 
+                       placeholder="Insira o nome do paciente" 
+                       class="container-input" 
+                       name="nome_paciente"
+                       onclick="this.placeholder=''" />
+            </form>
+        </div>
+    </main>
+    
+</body>
+</html>
