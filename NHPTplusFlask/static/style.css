@@ -28,14 +28,27 @@ header.filled {
     content: url("/static/logo_dark.png"); /* Troca para a logo escura */
 }
 
-/* Botões preenchidos */
+.nav-buttons button {
+    padding: 10px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.nav-buttons button.temp {
+    background-color: #f8fcff;
+    color: #5d8bb8;
+    border: 1px solid #5d8bb8;
+}
+
 .nav-buttons button.cheio {
     background-color: #f8fcff;
     color: #5d8bb8;
     border: 1px solid #f8fcff;
 }
 
-/* Botões vazados */
+
 .nav-buttons button.vazado {
     background-color: transparent; /* Sem preenchimento */
     color: #f8fcff; /* Texto branco */
@@ -45,24 +58,6 @@ header.filled {
 .nav-buttons button.vazado:hover {
     background-color: #f8fcff; /* Preenchido ao passar o mouse */
     color: #5d8bb8; /* Texto azul ao hover */
-}
-
-/* Botões padrão */
-.nav-buttons button {
-    background-color: #f8fcff;
-    color: #5d8bb8;
-    border: 1px solid #5d8bb8;
-    padding: 10px 15px;
-    margin: 0 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s, color 0.3s; /* Transições suaves */
-}
-
-.nav-buttons button:hover {
-    background-color: #5d8bb8;
-    color: f8fcff;
 }
 
 /* Centralizando o input no body */
