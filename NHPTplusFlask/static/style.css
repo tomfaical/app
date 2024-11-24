@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Questrial", sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f8fcff; /* Fundo do body */
@@ -9,6 +9,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-family: "Questrial", sans-serif;
     padding: 10px 20px;
     border-bottom: 2px solid #ccc; /* Linha de separação */
     background-color: #f8fcff; /* Fundo do header */
@@ -60,21 +61,11 @@ header.filled {
     color: #5d8bb8; /* Texto azul ao hover */
 }
 
-/* Centralizando o input no body */
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh; /* Define o espaço disponível no body */
-    background-color: #f8fcff; /* Fundo do body */
-}
-
 .container {
     text-align: left; /* Centraliza o conteúdo */
 }
 
-/* Estilização do input */
-.container-input {
+.container input.nome {
     background-color: transparent;
     border: 2px solid #5d8bb8;
     border-radius: 10px;
@@ -84,24 +75,24 @@ main {
     outline: none; /* Remove o contorno padrão */
     text-align: center;
     transition: border-color 0.3s;
-    cursor: text; /* Força o cursor a mudar para texto */
+    cursor: text; 
 }
 
-.container-input::placeholder {
+.container input.nome::placeholder {
     color: #5d8bb8;
     font-weight: bold;
 }
 
-.container-input:hover {
+.container input.nome:hover {
     border-color: #4b7091;
 }
 
-.container-input:focus {
+.container input.nome:focus {
     border-color: #4b7091; /* Muda a cor da borda ao clicar */
     color: #4b7091;
 }
 
-.patient-banner {
+.container div.patient-banner {
     background-color: #7ad3ff; /* Cor do retângulo */
     color: #3b3c47;
     text-align: center;

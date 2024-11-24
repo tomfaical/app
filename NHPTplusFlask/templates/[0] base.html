@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <!-- Header -->
     <header>
         <img src="/static/logo.png" alt="Logo" class="logo">
         <nav class="nav-buttons">
@@ -18,13 +17,18 @@
         </nav>
     </header>
 
-    <!-- Body -->
-    <main>
+    <main 
+    style="display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background-color: #f8fcff;"
+    >
         <div class="container">
             <form action="/" method="POST">
                 <input type="text" 
                        placeholder="Insira o nome do paciente" 
-                       class="container-input" 
+                       class="nome" 
                        name="nome_paciente"
                        onclick="this.placeholder=''" />
             </form>
