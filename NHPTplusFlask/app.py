@@ -42,7 +42,7 @@ def coleta_paretico():
 def incrementar_paretico():
     global n_coleta_ruim
     n_coleta_ruim += 1
-    return redirect(url_for("[1.0] coleta"))
+    return redirect(url_for("coleta"))
 
 # Rota para a tela de Coleta do braço saudável
 @app.route("/coleta/saudavel")
@@ -54,7 +54,7 @@ def coleta_saudavel():
 def incrementar_saudavel():
     global n_coleta_bom
     n_coleta_bom += 1
-    return redirect(url_for("[1.0] coleta"))
+    return redirect(url_for("coleta"))
 
 
 # Rotas para os outros botões do header
@@ -80,5 +80,5 @@ def iniciar_servidor():
 # Abrir o PyWebview com a aplicação
 if __name__ == "__main__":
     threading.Thread(target=iniciar_servidor, daemon=True).start()
-    webview.create_window("Minha Aplicação", "http://127.0.0.1:5000")
+    webview.create_window("NHPT+", "http://127.0.0.1:5000")
     webview.start()
