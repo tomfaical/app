@@ -28,7 +28,7 @@ header.filled {
     content: url("/static/logo_dark.png"); /* Troca para a logo escura */
 }
 
-/* Botões preenchidos - apenas Coleta */
+/* Botões preenchidos */
 .nav-buttons button.cheio {
     background-color: #f8fcff;
     color: #5d8bb8;
