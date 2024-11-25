@@ -35,39 +35,63 @@
     }
 
 
-    .btn{
-      background-color: rgba(217, 237, 255,0);
-      color: steelblue;
+    .btn {
+      width: 100%; /* Define a largura do botão igual à do dropdown */
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px;
       border: 2px solid steelblue;
-      border-radius: 200px;        
+      border-radius: 200px;
+      background-color: rgba(217, 237, 255, 0);
+      color: steelblue;
+      text-align: center;
     }
 
-    .btn:hover,.btn:focus {
-      background-color: rgba(217, 237, 255,0.6);
+    .btn:hover,
+    .btn:focus {
+      background-color: rgba(217, 237, 255, 0.6);
+    }
+
+    .dropdown-container {
+      position: relative;
+      width: 300px; /* Define a largura do botão e dropdown */
+      margin: 20px auto; /* Centraliza o botão */
     }
 
     .dropContent {
-      display: block;
+      display: none;
       position: absolute;
-      top:30%;
-      /* border-radius: 2px steelblue; */
+      top: 100%; /* Alinha abaixo do botão */
+      left: 0;
+      width: 95%; /* Define a largura do dropdown igual à do botão */
+      border: 2px solid steelblue;
+      border-radius: 15px;
       background-color: aliceblue;
-      overflow: auto;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      overflow: hidden;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       z-index: 1;
-      }
-      
-    .dropContent button {      
-      background-color: transparent;
-      /* color: steelblue; */
+    }
+
+    .dropContent button {
+      background-color: aliceblue;
+      color: steelblue;
       font-weight: bold;
       width: 100%;
       padding: 12px 16px;
-      display: block;
+      border: none;
+      outline: none;
+      text-align: left;
+      cursor: pointer;
     }
-    
-    /* .dropdown a:hover {background-color: #ddd;} */
-    
+
+    .dropContent button:hover {
+      background-color: #dceeff;
+    }
+
+    .dropContent button + button {
+      border-top: 1px solid steelblue; /* Borda fina entre botões */
+    }
+
     .show {display: block;}
 
 
@@ -94,7 +118,7 @@
       Paciente: {{ paciente_nome }}
     </div>
 
-    <div style="display: flex; margin-top: 30px;width:100%">
+    <div class="dropdown-container" style="display: flex; margin-top: 30px; width:100%;">
         <button class="btn" style="font-size: 18px; font-weight: bold; width: 100%;padding: 10px;" onclick="drop()">
           Selecionar teste
         </button>
@@ -121,64 +145,6 @@
         </p>
     </div>
 
-
-
-
-
-
-
-
-    <style>
-        .dropbtn {
-          background-color: #3498DB;
-          color: white;
-          padding: 16px;
-          font-size: 16px;
-          border: none;
-          cursor: pointer;
-        }
-        
-        .dropbtn:hover, .dropbtn:focus {
-          background-color: #2980B9;
-        }
-        
-        .dropdown {
-          position: relative;
-          display: inline-block;
-        }
-        
-        .dropdown-content {
-          display: none;
-          position: absolute;
-          background-color: #f1f1f1;
-          min-width: 160px;
-          overflow: auto;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          z-index: 1;
-        }
-        
-        .dropdown-content a {
-          color: black;
-          padding: 12px 16px;
-          text-decoration: none;
-          display: block;
-        }
-        
-        .dropdown a:hover {background-color: #ddd;}
-        
-        .show {display: block;}
-    </style>
-
-
-    <div style="margin-top: 50%;" class="dropdown">
-      <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-      <div id="myDropdown" class="dropdown-content">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </div>
-
     <script>
       function drop() {
         document.getElementById("dropOptions").classList.toggle("show");
@@ -197,27 +163,12 @@
           }
         }
       }
-      
-      
-      /* When the user clicks on the button, 
-      toggle between hiding and showing the dropdown content */
-      function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-      }
 
-      // Close the dropdown if the user clicks outside of it
-      // window.onclick = function(event) {
-      //   if (!event.target.matches('.dropbtn')) {
-      //     var dropdowns = document.getElementsByClassName("dropdown-content");
-      //     var i;
-      //     for (i = 0; i < dropdowns.length; i++) {
-      //       var openDropdown = dropdowns[i];
-      //       if (openDropdown.classList.contains('show')) {
-      //       openDropdown.classList.remove('show');
-      //       }
-      //     }
-      //   }
-      // }
+      function setTeste(test) {
+        teste_selecionado = test
+        location.href='/iniciar-coleta'
+      }
+      
     </script>
 
 
