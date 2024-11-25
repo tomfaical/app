@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="/static/script.js" defer></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHPT+ : Testes</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+
+  <style>
+    *{
+      color: steelblue
+    }
+
+    header {
+      padding: 20px;
+      border-bottom: 1px solid steelblue;
+    }
+
+    header.filled{
+      background-color: steelblue;
+    }
+
+    body {
+      background-color: aliceblue;
+      overflow: scroll;
+    }
+
+    .patient-banner{
+      padding: 9px;
+      background-color: skyblue;
+      font-weight: bold;
+      color: midnightblue
+    }
+
+
+    .btn{
+      background-color: rgba(217, 237, 255,0);
+      color: steelblue;
+      border: 2px solid steelblue;
+      border-radius: 200px;        
+    }
+
+    .btn:hover,.btn:focus {
+      background-color: rgba(217, 237, 255,0.6);
+    }
+  </style>
+</head>
+<body>
+    <header class="filled">
+        <img src="/static/logo_dark.png" alt="Logo" class="logo">
+        <nav class="nav-buttons">
+            <!-- 
+            <button> Testes </button>
+            <button> Análises </button>
+            <button> Dados </button>
+            <button> Área Dev </button>
+                -->
+        </nav>
+    </header>
+
+    <main>
+      
+        <div class="patient-banner">
+          Paciente: {{ paciente_nome }}
+        </div>
+
+        <div style="display: flex; margin-top: 30px;">
+            <button class="btn" style="font-size: 18px; font-weight: bold; width: 100%;padding: 10px;" onclick="">
+              Selecionar teste
+            </button>
+            <img src="down-arrow.ico" alt="" width="20px" height="20px" style="position:relative;right:30px;top:10px">
+            <!-- <p style="rotate: 90deg;font-size: 0px;">&gt</p> -->
+            <div id="myDropdown" class="dropdown-content">
+              <a href="#home">Home</a>
+              <a href="#about">About</a>
+              <a href="#contact">Contact</a>
+            </div>
+        </div>
+
+        <div class="txtBox" style="position: fixed; bottom: 0px;">
+            <p>
+                Data: {{data}} <br>
+                Coletas de braço parético: {{n_coleta_ruim}} <br>
+                Coletas de braço saudável: {{n_coleta_bom}} <br>
+                Coletas de força: {{n_coleta_forca}} <br>
+            </p>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <style>
+            .dropbtn {
+              background-color: #3498DB;
+              color: white;
+              padding: 16px;
+              font-size: 16px;
+              border: none;
+              cursor: pointer;
+            }
+            
+            .dropbtn:hover, .dropbtn:focus {
+              background-color: #2980B9;
+            }
+            
+            .dropdown {
+              position: relative;
+              display: inline-block;
+            }
+            
+            .dropdown-content {
+              display: none;
+              position: absolute;
+              background-color: #f1f1f1;
+              min-width: 160px;
+              overflow: auto;
+              box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+              z-index: 1;
+            }
+            
+            .dropdown-content a {
+              color: black;
+              padding: 12px 16px;
+              text-decoration: none;
+              display: block;
+            }
+            
+            .dropdown a:hover {background-color: #ddd;}
+            
+            .show {display: block;}
+        </style>
+
+
+<div class="dropdown">
+    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+    <div id="myDropdown" class="dropdown-content">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+  
+  <script>
+  /* When the user clicks on the button, 
+  toggle between hiding and showing the dropdown content */
+  function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+  
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </main>
+
+    
+</body>
+</html>

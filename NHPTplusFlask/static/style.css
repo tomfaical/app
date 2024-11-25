@@ -67,11 +67,11 @@ header.filled {
 
 .container input.nome {
     background-color: transparent;
-    border: 2px solid #5d8bb8;
+    border: 2px solid steelblue;
     border-radius: 10px;
     padding: 15px 30px;
     font-size: 16px;
-    color: #5d8bb8;
+    color: steelblue;
     outline: none; /* Remove o contorno padrão */
     text-align: center;
     transition: border-color 0.3s;
@@ -156,6 +156,12 @@ header.filled {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* Hover nos novos botões */
+.novo-botao:hover {
+    background-color: #5d8bb8;
+    color: white;
+}
+
 /* Botão Braço parético */
 #botao-parético {
     padding: 15px 61px;
@@ -168,12 +174,6 @@ header.filled {
     padding: 15px 60px;
     top: 260px; /* 20px abaixo do botão "Braço parético" */
     left: 360px; /* 50px à direita do botão "Iniciar teste" */
-}
-
-/* Hover nos novos botões */
-.novo-botao:hover {
-    background-color: #5d8bb8;
-    color: white;
 }
 
 /* Botões inicialmente escondidos */
