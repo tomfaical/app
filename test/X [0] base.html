@@ -31,6 +31,7 @@
             padding: 20px;
             width: 100%;
             font-size: 16px;
+            cursor: pointer;
         }
 
         .btn:hover,.btn:focus {
@@ -38,7 +39,7 @@
         }
         
         .overlay {
-            display: block;
+            display: none;
             height: 100%;
             width: 100%;
             position: fixed;
@@ -52,7 +53,7 @@
         }
 
         .popup{
-            display:none;
+            display: none;
             position: absolute;
             top:10%;
             left: 4%;
@@ -63,6 +64,16 @@
             border-radius: 40px;
             background-color: aliceblue;
             border: 2px solid #DDEEFF
+        }
+        .popup .close {
+            position: absolute;
+            left: 88%;
+            width: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
         }
 
         .show{
@@ -100,25 +111,39 @@
             </button>
         </div>
 
+        <div id="overlay" class="overlay"></div>
+
         <div id="encontrarPaciente" class="popup">
+            <button class="close" onclick="closePopup('encontrarPaciente')">&times;</button>
             <h2>Encontrar Paciente</h2>
-            <p>Conteúdo da aba Encontrar Paciente.</p>
+            
+            <button class="btn" style="margin-top:10px;font-weight: bold;" onclick="location.href='/testes'">
+                Lucas Sacca
+            </button>
         </div>
 
         <div id="cadastrarPaciente" class="popup">
+            <button class="close" onclick="closePopup('cadastrarPaciente')">&times;</button>
             <h2>Cadastrar Paciente</h2>
-            <p>Conteúdo da aba Cadastrar Paciente.</p>
+            <h4 style="margin: 50px;text-align: center;color: grey;">WIP</h4>
+            
+            
         </div>
+
         
     </main>
     <script>
         function showContent(sectionId) {
-            // Esconde todas as seções
-            document.querySelectorAll('.popup').forEach(section => section.classList.remove('active'));
-
-            // Mostra a seção correspondente
-            // document.getElements('.overlay').add('show')
+            
+            document.getElementById("overlay").classList.add('show')
             document.getElementById(sectionId).classList.add('show');
+
+        }
+
+        function closePopup(sectionId) {
+            
+            document.getElementById("overlay").classList.remove('show')
+            document.getElementById(sectionId).classList.remove('show');
 
         }
     </script>
