@@ -125,30 +125,30 @@
   <header class="filled">
     <div style="display: block;">
       <a href="/home" style="text-decoration: none;">
-          <img src="logo.png" alt="Logo NHPT+" style="color:aliceblue">
+          <img src="/static/logo_dark.png" alt="Logo NHPT+" style="color:aliceblue" height="20%">
       </a>
       <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
           <button class="nav-button active" onclick="location.href='/testes'">
             <div style="display: flex;">
-              <div><img src="pencil.svg" alt="test icon" width="15px" color=steelblue></div>
+              <div><img src="/static/pencil.svg" alt="test icon" width="15px" color=steelblue></div>
               <div style="margin-left: 5px;">Testes</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/graficos'">
             <div style="display: flex;">
-              <div><img src="graph.svg" alt="test icon" width="15px" color=steelblue></div>
+              <div><img src="/static/graph.svg" alt="test icon" width="15px" color=steelblue></div>
               <div style="margin-left: 5px;color: aliceblue;">Gráficos</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/dados'">
             <div style="display: flex;">
-              <div><img src="dados.svg" alt="test icon" width="13px" color=aliceblue></div>
+              <div><img src="/static/dados.svg" alt="test icon" width="13px" color=aliceblue></div>
               <div style="margin-left: 5px;color: aliceblue;">Dados</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/area-dev'">
             <div style="display: flex;">
-              <div><img src="dev.svg" alt="test icon" width="15px" color=steelblue></div>
+              <div><img src="/static/dev.svg" alt="test icon" width="15px" color=steelblue></div>
               <div style="margin-left: 5px;color: aliceblue;">Área dev</div>
             </div>
           </button>
@@ -166,23 +166,23 @@
         <button class="btn" style="font-size: 18px; font-weight: bold; width: 100%;padding: 10px;" onclick="drop()">
           Selecionar teste
         </button>
-        <img src="down-arrow.ico" alt="" width="20px" height="20px" style="position:relative;right:30px;top:12px">
+        <img src="/static/down-arrow.ico" alt="" width="20px" height="20px" style="position:relative;right:30px;top:12px">
         <!-- <p style="rotate: 90deg;font-size: 0px;">&gt</p> -->
         <div id="dropOptions" class="dropContent">
-          <button onclick="setTeste('paretico')">
+          <button onclick="setTeste('NHPT Braço Parético')">
           NHPT Braço Parético</button>
                   
-          <button onclick="setTeste('saudavel')">
+          <button onclick="setTeste('NHPT Braço Saudável')">
           NHPT Braço Saudável</button>
         
-          <button onclick="setTeste('forca')">
+          <button onclick="setTeste('Teste de Força')">
           Teste de Força</button>
         </div>
     </div>
 
     <div style="position: fixed; bottom: 0px;">
         <p>
-            Data: {{data}} <br>
+            Data: {{dataHoje}} <br>
             Coletas de braço parético: {{n_coleta_ruim}} <br>
             Coletas de braço saudável: {{n_coleta_bom}} <br>
             Coletas de força: {{n_coleta_forca}} <br>
@@ -210,7 +210,7 @@
 
       function setTeste(test) {
         teste_selecionado = test
-        location.href='/iniciar-coleta'
+        location.href='/testes/iniciar-coleta'
       }
       
     </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NHPT+ : Coleta Força</title>
+    <title>NHPT+ : Coleta Braço Parético</title>
     <link rel="stylesheet" href="/static/style.css">
     <style>
         *{
@@ -40,6 +40,7 @@
             background-color: aliceblue;
             color: steelblue;
         }
+
         body {
             background-color: aliceblue;
         }
@@ -71,30 +72,30 @@
     <header class="filled">
         <div style="display: block;">
           <a href="/home" style="text-decoration: none;">
-              <img src="logo.png" alt="Logo NHPT+" style="color:aliceblue">
+              <img src="/static/logo_dark.png" alt="Logo NHPT+" style="color:aliceblue">
           </a>
           <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
               <button class="nav-button active" onclick="location.href='/testes'">
                 <div style="display: flex;">
-                  <div><img src="pencil.svg" alt="test icon" width="15px" color=steelblue></div>
+                  <div><img src="/static/pencil.svg" alt="test icon" width="15px" color=steelblue></div>
                   <div style="margin-left: 5px;">Testes</div>
                 </div>
               </button>
               <button class="nav-button nav-hover" onclick="location.href='/graficos'">
                 <div style="display: flex;">
-                  <div><img src="graph.svg" alt="test icon" width="15px" color=steelblue></div>
+                  <div><img src="/static/graph.svg" alt="test icon" width="15px" color=steelblue></div>
                   <div style="margin-left: 5px;color: aliceblue;">Gráficos</div>
                 </div>
               </button>
               <button class="nav-button nav-hover" onclick="location.href='/dados'">
                 <div style="display: flex;">
-                  <div><img src="dados.svg" alt="test icon" width="13px" color=aliceblue></div>
+                  <div><img src="/static/dados.svg" alt="test icon" width="13px" color=aliceblue></div>
                   <div style="margin-left: 5px;color: aliceblue;">Dados</div>
                 </div>
               </button>
               <button class="nav-button nav-hover" onclick="location.href='/area-dev'">
                 <div style="display: flex;">
-                  <div><img src="dev.svg" alt="test icon" width="15px" color=steelblue></div>
+                  <div><img src="/static/dev.svg" alt="test icon" width="15px" color=steelblue></div>
                   <div style="margin-left: 5px;color: aliceblue;">Área dev</div>
                 </div>
               </button>
@@ -111,7 +112,7 @@
         <!-- texto + botao -->
         <div style="margin-top: 30px;">
             <div style="display: inline-block;width: 50%; height: 20px; color:steelblue; font-weight: bold; margin-left: 7px; font-size: small;">
-                Testando Força...
+                Testando NHPT Braço Parético...
             </div>
 
             <div style="position:absolute; top: 150px; left: 68.7%; width: 27.5%; height: 20px;">
@@ -150,13 +151,13 @@
     <script>
         function encerrarColeta(button) {
             button.remove()
-            coletaForca = false
-            // update na var de encerrar coleta da força
-            // coletaForca = False -> parar cronometro
+            coletaRuim = false
+            // update na var de encerrar coleta do braço paretico
+            // coletaRuim = False -> parar cronometro
         }
 
         function start(){
-        coletaForca = true
+        coletaRuim = true
         }
 
 
@@ -169,7 +170,7 @@
         // Cronometro
 
         // Variável para controlar o cronômetro
-        let coletaForca = false;
+        let coletaRuim = false;
 
         // Variáveis internas
         let timerInterval; // Armazena o intervalo
@@ -208,12 +209,12 @@
             }
         }
 
-        // Monitorar a variável "coletaForca"
+        // Monitorar a variável "coletaRuim"
         setInterval(() => {
-            if (coletaForca && !timerInterval) {
-                startTimer(); // Inicia o cronômetro quando coletaForca é true
-            } else if (!coletaForca && timerInterval) {
-                stopTimer(); // Para o cronômetro quando coletaForca é false
+            if (coletaRuim && !timerInterval) {
+                startTimer(); // Inicia o cronômetro quando coletaRuim é true
+            } else if (!coletaRuim && timerInterval) {
+                stopTimer(); // Para o cronômetro quando coletaRuim é false
             }
         }, 100); // Verifica a cada 100ms
 

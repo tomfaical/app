@@ -9,24 +9,27 @@
   <link rel="stylesheet" href="/static/style.css">
 
   <style>
+    *{
+      color: steelblue
+    }
+
     header {
       padding: 20px;
-      
+      border-bottom: 1px solid steelblue;
     }
 
     header.filled{
-      background-color: black;
+      background-color: steelblue;
     }
 
     body {
-      background-color: rgb(15,15,15);
+      background-color: aliceblue;
       overflow: scroll;
     }
     
     .nav-button {
       background-color: transparent;
       border-radius: 40px;
-      color: aliceblue;
       position: relative;
       top:20%;
       margin: 0 10px;
@@ -36,19 +39,19 @@
     }
 
     .nav-hover:hover { 
-      background-color: rgb(26,26,26);
-      color: lime;
+      background-color: rgba(217, 237, 255,0.8);
+      color: steelblue;
       cursor: pointer;
     }
 
     .active { 
-      background-color: transparent;
-      color: lime;
+      background-color: aliceblue;
+      color: steelblue;
     }
 
     .patient-banner{
       padding: 9px;
-      background-color: black;
+      background-color: skyblue;
       font-weight: bold;
       color: midnightblue
     }
@@ -88,31 +91,31 @@
   <header class="filled">
     <div style="display: block;">
       <a href="/home" style="text-decoration: none;">
-          <img src="logo.png" alt="Logo NHPT+" style="color:aliceblue">
+          <img src="/static/logo_dark.png" alt="Logo NHPT+" style="color:aliceblue">
       </a>
       <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
-          <button class="nav-button nav-hover" onclick="location.href='/testes'">
+          <button class="nav-button active" onclick="location.href='/testes'">
             <div style="display: flex;">
-              <div><img src="pencil.svg" alt="test icon" width="15px"></div>
+              <div><img src="/static/pencil.svg" alt="test icon" width="15px" color=steelblue></div>
               <div style="margin-left: 5px;">Testes</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/graficos'">
             <div style="display: flex;">
-              <div><img src="graph.svg" alt="test icon" width="15px"></div>
-              <div style="margin-left: 5px;">Gráficos</div>
+              <div><img src="/static/graph.svg" alt="test icon" width="15px" color=steelblue></div>
+              <div style="margin-left: 5px;color: aliceblue;">Gráficos</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/dados'">
             <div style="display: flex;">
-              <div><img src="dados.svg" alt="test icon" width="13px"></div>
-              <div style="margin-left: 5px;">Dados</div>
+              <div><img src="/static/dados.svg" alt="test icon" width="13px" color=aliceblue></div>
+              <div style="margin-left: 5px;color: aliceblue;">Dados</div>
             </div>
           </button>
-          <button class="nav-button active" onclick="location.href='/area-dev'">
+          <button class="nav-button nav-hover" onclick="location.href='/area-dev'">
             <div style="display: flex;">
-              <div><img src="dev.svg" alt="test icon" width="15px"></div>
-              <div style="margin-left: 5px;">Área dev</div>
+              <div><img src="/static/dev.svg" alt="test icon" width="15px" color=steelblue></div>
+              <div style="margin-left: 5px;color: aliceblue;">Área dev</div>
             </div>
           </button>
       </div>
@@ -121,7 +124,7 @@
 
   <main>
     
-    <div class="patient-banner" style="color: limegreen;">
+    <div class="patient-banner">
       Paciente: {{ paciente_nome }}
     </div>
 
