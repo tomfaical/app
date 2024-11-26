@@ -131,7 +131,7 @@ def tabelas():
     global paciente_nome
     return render_template("[3.0] dados.html", paciente_nome=paciente_nome)
 
-@app.route("/dev")
+@app.route("/area-dev")
 def area_dev():
     global paciente_nome
     return render_template("[4.0] area-dev.html", paciente_nome=paciente_nome)

@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NHPT+ : Testes</title>
+  <title>NHPT+ : Dados</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
   <link rel="stylesheet" href="/static/style.css">
 
   <style>
-    *{
+    /* *{
       color: steelblue
-    }
+    } */
 
     header {
       padding: 20px;
@@ -31,6 +31,7 @@
       background-color: transparent;
       border-radius: 40px;
       position: relative;
+      color: aliceblue;
       top:20%;
       margin: 0 10px;
       height: 32px;
@@ -48,7 +49,7 @@
       background-color: aliceblue;
       color: steelblue;
     }
-    
+
     .patient-banner{
       padding: 9px;
       background-color: skyblue;
@@ -94,33 +95,33 @@
         <img src="/static/logo_dark.svg" alt="Logo NHPT+" width="70px" style="position: absolute;top: 13px;">
       </a>
       <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
-          <button class="nav-button active" onclick="location.href='/testes'">
+          <button class="nav-button nav-hover" onclick="location.href='/testes'">
             <div style="display: flex;">
-              <div><img src="/static/pencil.svg" alt="test icon" width="15px" color=steelblue></div>
+              <div><img src="/static/pencil.svg" alt="test icon" width="15px"></div>
               <div style="margin-left: 5px;">Testes</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/graficos'">
             <div style="display: flex;">
-              <div><img src="/static/graph.svg" alt="test icon" width="15px" color=steelblue></div>
-              <div style="margin-left: 5px;color: aliceblue;">Gráficos</div>
+              <div><img src="/static/graph.svg" alt="test icon" width="15px"></div>
+              <div style="margin-left: 5px;">Gráficos</div>
             </div>
           </button>
-          <button class="nav-button nav-hover" onclick="location.href='/dados'">
+          <button class="nav-button active" onclick="location.href='/dados'">
             <div style="display: flex;">
-              <div><img src="/static/dados.svg" alt="test icon" width="13px" color=aliceblue></div>
-              <div style="margin-left: 5px;color: aliceblue;">Dados</div>
+              <div><img src="/static/dados.svg" alt="test icon" width="13px"></div>
+              <div style="margin-left: 5px;">Dados</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/area-dev'">
             <div style="display: flex;">
-              <div><img src="/static/dev.svg" alt="test icon" width="15px" color=steelblue></div>
-              <div style="margin-left: 5px;color: aliceblue;">Área dev</div>
+              <div><img src="/static/dev.svg" alt="test icon" width="15px"></div>
+              <div style="margin-left: 5px;">Área dev</div>
             </div>
           </button>
       </div>
   </div>  
-</header>
+  </header>
 
   <main>
     
