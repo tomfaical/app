@@ -102,7 +102,7 @@
 <body>
     <header>
         <div style="display: block;">
-            <img src="/static/logo.png" alt="Logo NHPT+" width="10px" height="10px">
+            <img src="/static/logo.svg" alt="Logo NHPT+" width="70px" style="position: absolute;top: 13px;">
             <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
                 <button class="navbtn-home">Testes</button>
                 <button class="navbtn-home">Gráficos</button>
@@ -134,9 +134,10 @@
             <button class="close" onclick="closePopup('encontrarPaciente')">&times;</button>
             <h2>Encontrar Paciente</h2>
             
-            <button class="btn" style="margin-top:10px;font-weight: bold;" onclick="location.href='/testes'">
-                Lucas Sacca
-            </button>
+            <form id="pacienteForm" action="/" method="POST">
+                <input type="hidden" name="nome_paciente" value="Lucas Sacca">
+                <button type="button" onclick="submitNome()">Lucas Sacca</button>
+            </form>
         </div>
 
         <div id="cadastrarPaciente" class="popup">
@@ -174,6 +175,10 @@
             document.getElementById(sectionId).classList.remove('show');
 
         }
+
+        function submitNome() {
+        document.getElementById("pacienteForm").submit();
+    }
     </script>
 </body>
 </html>

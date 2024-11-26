@@ -9,10 +9,6 @@
   <link rel="stylesheet" href="/static/style.css">
 
   <style>
-    *{
-      color: steelblue
-    }
-
     header {
       padding: 20px;
       border-bottom: 1px solid steelblue;
@@ -116,8 +112,9 @@
 
     .show {display: block;}
 
-
-
+    .text{
+      color: steelblue
+    }
 
   </style>
 </head>
@@ -125,7 +122,7 @@
   <header class="filled">
     <div style="display: block;">
       <a href="/home" style="text-decoration: none;">
-          <img src="/static/logo_dark.png" alt="Logo NHPT+" style="color:aliceblue" height="20%">
+        <img src="/static/logo_dark.svg" alt="Logo NHPT+" width="70px" style="position: absolute;top: 13px;">
       </a>
       <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
           <button class="nav-button active" onclick="location.href='/testes'">
@@ -159,7 +156,7 @@
   <main>
     
     <div class="patient-banner">
-      Paciente: {{ paciente_nome }}
+      Paciente: {{paciente_nome}}
     </div>
 
     <div class="dropdown-container" style="display: flex; margin-top: 30px; width:100%;">
@@ -169,18 +166,40 @@
         <img src="/static/down-arrow.ico" alt="" width="20px" height="20px" style="position:relative;right:30px;top:12px">
         <!-- <p style="rotate: 90deg;font-size: 0px;">&gt</p> -->
         <div id="dropOptions" class="dropContent">
-          <button onclick="setTeste('NHPT Braço Parético')">
+          <form id="testForm" action="/" method="POST">
+
+            <input type="hidden" name="teste_submit" value="NHPT Braço Parético">
+            <button type="button" onclick="submitTest()"> 
+             NHPT Braço Parético
+            </button>
+           
+            <input type="hidden" name="teste_submit" value="NHPT Braço Saudável">
+            <button type="button" onclick="submitTest()"> 
+             NHPT Braço Saudável
+            </button>
+           
+            <input type="hidden" name="teste_submit" value="Teste de Força">
+            <button type="button" onclick="submitTest()"> 
+             Teste de Força
+            </button>
+           
+           </form>
+         
+          <!-- <button onclick="setTeste('NHPT Braço Parético')">
           NHPT Braço Parético</button>
                   
           <button onclick="setTeste('NHPT Braço Saudável')">
           NHPT Braço Saudável</button>
         
           <button onclick="setTeste('Teste de Força')">
-          Teste de Força</button>
+          Teste de Força</button> -->
         </div>
     </div>
 
-    <div style="position: fixed; bottom: 0px;">
+    <button onclick="SaccaTest()">Lucas Sacca</button>
+
+
+    <div class="text" style="position: fixed; bottom: 0px;">
         <p>
             Data: {{dataHoje}} <br>
             Coletas de braço parético: {{n_coleta_ruim}} <br>
@@ -207,10 +226,14 @@
           }
         }
       }
+      
+      function SaccaTest() {
+        console.log(paciente_nome)
+      }
 
-      function setTeste(test) {
-        teste_selecionado = test
-        location.href='/testes/iniciar-coleta'
+      function submitTest() {
+        console.log("alou")
+        document.getElementById("testForm").submit();
       }
       
     </script>

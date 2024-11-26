@@ -22,13 +22,18 @@ def home():
     global paciente_nome
     if request.method == "POST":
         paciente_nome = request.form.get("nome_paciente")
-        return redirect(url_for("coleta"))
+        return redirect(url_for("testes"))
     return render_template("[0] base.html")
 
 # Rota para a tela de Coleta
-@app.route("/testes")
+@app.route("/testes", methods=["GET", "POST"])
 def testes():
-    global paciente_nome, dataHoje, n_coleta_ruim, n_coleta_bom, n_coleta_forca
+    global paciente_nome, dataHoje, n_coleta_ruim, n_coleta_bom, n_coleta_forca, teste_selecionado
+    
+    if request.method == "POST":
+        teste_selecionado = request.form.get("teste_submit")
+        print(teste_selecionado)
+        return redirect(url_for("testes/iniciar-coleta"))
     
     return render_template(
         "[1.0] testes.html",
@@ -37,6 +42,7 @@ def testes():
         n_coleta_ruim=n_coleta_ruim,
         n_coleta_bom=n_coleta_bom,
         n_coleta_forca=n_coleta_forca,
+        teste_selecionado=teste_selecionado
     )
 
 @app.route("/testes/iniciar-coleta")
