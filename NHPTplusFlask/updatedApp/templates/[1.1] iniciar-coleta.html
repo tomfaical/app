@@ -139,17 +139,20 @@
     </main>
 
     <script>
+        const teste_selecionado="{{teste_selecionado}}";
+        console.log("Teste selecionado:", teste_selecionado);
+
         function routeTest() {
             if (teste_selecionado == "NHPT Braço Parético") {
-                // location.href='/testes/paretico'
+                location.href='/testes/paretico'
                 console.log("Ruim")
             }
             if (teste_selecionado == "NHPT Braço Saudável") {
-                // location.href='/testes/saudavel'
+                location.href='/testes/saudavel'
                 console.log("Bom")
             }
             if (teste_selecionado == "Teste de Força") {
-                // location.href='/testes/forca'
+                location.href='/testes/forca'
                 console.log("Força")
             }
         }

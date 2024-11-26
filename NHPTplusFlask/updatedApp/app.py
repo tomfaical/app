@@ -45,28 +45,37 @@ def testes():
         teste_selecionado=teste_selecionado
     )
 
-@app.route("/testes/iniciar-coleta")
+@app.route("/testes/iniciar-coleta", methods=["GET", "POST"])
 def iniciar_coleta():
-    global paciente_nome, dataHoje, teste_selecionado
+    global paciente_nome, dataHoje, teste_selecionado, paciente_nome, n_coleta_ruim, n_coleta_bom, n_coleta_forca
+    if request.method == "POST":
+        data = request.get_json()
+        teste_selecionado = data.get("teste_selecionado", "Nenhum teste selecionado")
+        print("Teste selecionado:", teste_selecionado)  # Log para debug
+        return redirect(url_for("iniciar_coleta"))
+
+    # Renderizar a página normalmente no caso de GET
     return render_template(
-        "[1.1] iniciar-coleta.html", 
+        "[1.1] iniciar-coleta.html",
         paciente_nome=paciente_nome,
         dataHoje=dataHoje,
         teste_selecionado=teste_selecionado,
         n_coleta_ruim=n_coleta_ruim,
         n_coleta_bom=n_coleta_bom,
         n_coleta_forca=n_coleta_forca
-        )
+    )
+
 
 # Rota para a tela de Coleta do braço parético
 @app.route("/testes/paretico")
 def coleta_paretico():
-    global paciente_nome, dataHoje, coletaRuim
+    global paciente_nome, dataHoje, coletaRuim, teste_selecionado
     return render_template(
         "[1.2] paretico.html", 
         paciente_nome=paciente_nome,
         coletaRuim=coletaRuim,
-        dataHoje=dataHoje
+        dataHoje=dataHoje,
+        teste_selecionado=teste_selecionado
         )
 
 @app.route("/incrementar_paretico", methods=["POST"])
@@ -78,12 +87,13 @@ def incrementar_paretico():
 # Rota para a tela de Coleta do braço saudável
 @app.route("/testes/saudavel")
 def coleta_saudavel():
-    global paciente_nome, dataHoje, coletaBom
+    global paciente_nome, dataHoje, coletaBom, teste_selecionado
     return render_template(
         "[1.3] saudavel.html", 
         paciente_nome=paciente_nome,
         coletaBom=coletaBom,
-        dataHoje=dataHoje
+        dataHoje=dataHoje,
+        teste_selecionado=teste_selecionado
         )
 
 @app.route("/incrementar_saudavel", methods=["POST"])
@@ -95,12 +105,13 @@ def incrementar_saudavel():
 # Rota para a tela de Coleta da força
 @app.route("/testes/forca")
 def coleta_forca():
-    global paciente_nome, dataHoje, coletaForca
+    global paciente_nome, dataHoje, coletaForca, teste_selecionado
     return render_template(
         "[1.4] forca.html", 
         paciente_nome=paciente_nome, 
         coletaForca=coletaForca,
-        dataHoje=dataHoje
+        dataHoje=dataHoje,
+        teste_selecionado=teste_selecionado
         )
 
 @app.route("/incrementar_forca", methods=["POST"])

@@ -165,7 +165,7 @@
         </button>
         <img src="/static/down-arrow.ico" alt="" width="20px" height="20px" style="position:relative;right:30px;top:12px">
         <!-- <p style="rotate: 90deg;font-size: 0px;">&gt</p> -->
-        <div id="dropOptions" class="dropContent">
+        <!-- <div id="dropOptions" class="dropContent">
           <form id="testForm" action="/" method="POST">
 
             <input type="hidden" name="teste_submit" value="NHPT Braço Parético">
@@ -193,11 +193,15 @@
         
           <button onclick="setTeste('Teste de Força')">
           Teste de Força</button> -->
+        <!-- </div> --> 
+
+        <div id="dropOptions" class="dropContent">
+          <button type="button" onclick="setTeste('NHPT Braço Parético')">NHPT Braço Parético</button>
+          <button type="button" onclick="setTeste('NHPT Braço Saudável')">NHPT Braço Saudável</button>
+          <button type="button" onclick="setTeste('Teste de Força')">Teste de Força</button>
         </div>
+      
     </div>
-
-    <button onclick="SaccaTest()">Lucas Sacca</button>
-
 
     <div class="text" style="position: fixed; bottom: 0px;">
         <p>
@@ -227,13 +231,22 @@
         }
       }
       
-      function SaccaTest() {
-        console.log(paciente_nome)
-      }
-
-      function submitTest() {
-        console.log("alou")
-        document.getElementById("testForm").submit();
+      function setTeste(teste) {
+        // Enviar uma requisição POST para o backend
+        fetch('/testes/iniciar-coleta', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ teste_selecionado: teste }),
+        })
+        .then(response => {
+            if (response.redirected) {
+                // Redirecionar para a URL recebida no backend
+                window.location.href = response.url;
+            }
+        })
+        .catch(error => console.error('Erro ao selecionar teste:', error));
       }
       
     </script>
