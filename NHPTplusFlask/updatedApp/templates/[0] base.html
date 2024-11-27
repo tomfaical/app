@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="/static/style.css">
 
     <style>
-        *{
-            color: steelblue
-        }
-
         header {
             padding: 20px;
             border-bottom: 1px solid steelblue;
+        }
+
+        .text {
+            color: steelblue;
         }
 
         .navbtn-home { 
@@ -56,6 +56,15 @@
             background-color: rgba(217, 237, 255,0.6);
         }
         
+        .btn:disabled {
+            background-color: #E0E8EE;
+            cursor: not-allowed;
+        }
+
+        .btn-danger:hover {
+            background-color: rgba(255, 217, 217, 0.6);
+        }
+
         .overlay {
             display: none;
             height: 100%;
@@ -69,19 +78,22 @@
             transition: 0.5s;
         }
 
-        .popup{
+        .popup {
             display: none;
             position: absolute;
-            top:10%;
-            left: 4%;
+            top: 10%;
+            left: 7%;
             z-index: 2;
-            width:80%;
-            height: 80%;
+            width: 80%; 
+            /* max-height: 80%; Evita que o popup ultrapasse a tela */
+            overflow-y: auto; /* Adiciona scroll interno se necessário */
             padding: 30px;
             border-radius: 40px;
             background-color: aliceblue;
-            border: 2px solid #DDEEFF
+            border: 2px solid #DDEEFF;
+            /* box-sizing: border-box; Garante que padding e border não ultrapassem o tamanho definido */
         }
+        
         .popup .close {
             position: absolute;
             left: 88%;
@@ -96,6 +108,80 @@
         .show{
             display:block;
         }
+
+
+        form {
+            display: flex;
+            flex-direction: column; /* Alinha os elementos verticalmente */
+            width: 100%; /* Ajusta a largura do formulário ao popup */
+            margin: 0; /* Remove margens padrão */
+        }
+
+        form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        form input, form select {
+            /* width: 90%; */
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 2px solid steelblue;
+            border-radius: 5px;
+        }
+
+        form button {
+            /* width: 95%; */
+            padding: 10px;
+            background-color: steelblue;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #4682B4;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .styled-table thead tr {
+            background-color: steelblue;
+            color: white;
+            text-align: left;
+        }
+
+        .styled-table th {
+            padding: 12px;
+            border: 1px solid #ddd;
+            color: aliceblue;
+        }
+
+        .styled-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .styled-table tbody tr {
+            cursor: pointer;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .styled-table tbody tr.selected {
+            background-color: steelblue;
+            color: aliceblue;
+        }
+
     </style>
 </head>
                                    
@@ -104,81 +190,393 @@
         <div style="display: block;">
             <img src="/static/logo.svg" alt="Logo NHPT+" width="70px" style="position: absolute;top: 13px;">
             <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
-                <button class="navbtn-home">Testes</button>
-                <button class="navbtn-home">Gráficos</button>
-                <button class="navbtn-home">Dados</button>
-                <button class="navbtn-home">Área Dev</button>
+                <button class="navbtn-home text">Testes</button>
+                <button class="navbtn-home text">Gráficos</button>
+                <button class="navbtn-home text">Dados</button>
+                <button class="navbtn-home text">Área Dev</button>
             </div>
         </div>          
     </header>  
 
     <main>
-        <p style="color:powderblue;">
-            <h1>Bem vindo(a) ao portal do NHPT+ !</h1>
-            <h2>Escolha uma opção:</h2>
+        <p>
+            <h1 class="text">Bem vindo(a) ao portal do NHPT+ !</h1>
+            <h2 class="text">Escolha uma opção:</h2>
         </p>
         
         <div style="position:relative; top: 50px;">
-            <button class="btn" style="display:block; margin-bottom: 30px;" onclick="showContent('encontrarPaciente')">
+            <button class="btn" style="display:block; margin-bottom: 30px;" onclick="showContent('encontrarPaciente','overlay1')">
                 Encontrar paciente
             </button>
     
-            <button class="btn" style="display:block;" onclick="showContent('cadastrarPaciente')">
+            <button class="btn" style="display:block;" onclick="showContent('cadastrarPaciente','overlay1')">
                 Cadastrar paciente
             </button>
         </div>
 
-        <div id="overlay" class="overlay"></div>
+        <div id="overlay1" class="overlay"></div>
 
         <div id="encontrarPaciente" class="popup">
-            <button class="close" onclick="closePopup('encontrarPaciente')">&times;</button>
-            <h2>Encontrar Paciente</h2>
+            <button class="close" onclick="closePopup('encontrarPaciente','overlay1')">&times;</button>
+            <h2 style="color:steelblue">Pacientes Registrados</h2>
+            <div>
+                <table id="patient-table" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Idade</th>
+                            <th>Sexo</th>
+                            <th>Membro Dominante</th>
+                            <th>Membro Acometido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Renderizar pacientes dinamicamente -->
+                        {% for index, paciente in pacientes.iterrows() %}
+                        <tr onclick="selectRow(this)" data-id="{{ index }}">
+                            <td>{{ paciente['nome'] }}</td>
+                            <td>{{ paciente['idade'] }}</td>
+                            <td>{{ paciente['sexo'] }}</td>
+                            <td>{{ paciente['membro_dominante'] }}</td>
+                            <td>{{ paciente['membro_acometido'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             
-            <form id="pacienteForm" action="/" method="POST">
-                <input type="hidden" name="nome_paciente" value="Lucas Sacca">
-                <button type="button" onclick="submitNome()">Lucas Sacca</button>
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button class="btn" id="select-patient-btn" onclick="confirmSelection()" disabled>
+                    Selecionar Paciente
+                    </button>
+                    <button class="btn" id="edit-patient-btn" onclick="editPatient()" disabled>
+                    Editar
+                    </button>
+                    <button class="btn btn-danger" id="delete-patient-btn" onclick="deletePatient()" disabled>
+                    Excluir
+                    </button>
+                </div>
+                </div>
+        </div>
+            
+        <div id="overlay2" class="overlay"></div>
+        <div id="edit-popup" class="popup">
+            <h2 style="color:steelblue">Editar Paciente</h2>
+            <button class="close" style="position: absolute;top: 5.5%;" onclick="closePopup('edit-popup','overlay2')">&times;</button>
+            <form onsubmit="submitEditForm(); return false;">
+                <input type="hidden" id="edit-index">
+                <label>Nome:</label>
+                <input type="text" id="edit-name" required>
+                <label>Idade:</label>
+                <input type="number" id="edit-age" required>
+                <label>Sexo:</label>
+                <select id="edit-sex" required>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+                <label>Membro Dominante:</label>
+                <select id="edit-dominant" required>
+                    <option value="Direito">Direito</option>
+                    <option value="Esquerdo">Esquerdo</option>
+                </select>
+                <label>Membro Acometido:</label>
+                <select id="edit-affected" required>
+                    <option value="Direito">Direito</option>
+                    <option value="Esquerdo">Esquerdo</option>
+                </select>
+                <button type="submit">Salvar</button>
             </form>
+        </div>
         </div>
 
         <div id="cadastrarPaciente" class="popup">
-            <button class="close" onclick="closePopup('cadastrarPaciente')">&times;</button>
+            <button class="close" onclick="closePopup('cadastrarPaciente','overlay1')">&times;</button>
             <h2>Cadastrar Paciente</h2>
-            <h4 style="margin: 400px 50px;text-align: center;color: grey;">WIP</h4>
+            <form id="cadastroPacienteForm" action="/cadastrarPaciente" method="POST">
+                <label for="nome">Nome:</label><br>
+                <input type="text" id="nome" name="nome" placeholder="Digite o nome" required><br><br>
+                
+                <label for="idade">Idade:</label><br>
+                <input type="number" id="idade" name="idade" placeholder="Digite a idade" required><br><br>
+                
+                <label for="sexo">Sexo:</label><br>
+                <select id="sexo" name="sexo" required>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Outro">Outro</option>
+                </select><br><br>
+                
+                <label for="membroDominante">Membro Dominante:</label><br>
+                <select id="membroDominante" name="membroDominante" required>
+                    <option value="Direito">Direito</option>
+                    <option value="Esquerdo">Esquerdo</option>
+                </select><br><br>
+                
+                <label for="membroAcometido">Membro Acometido:</label><br>
+                <select id="membroAcometido" name="membroAcometido" required>
+                    <option value="Direito">Direito</option>
+                    <option value="Esquerdo">Esquerdo</option>
+                </select><br><br>
+                
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
             
             
         </div>
-
-<!-- 
-        <div style="position: relative;top: 300px;">
-            <a href="/testes">Testes<br></a>
-            <a href="/testes/iniciar-coleta">Iniciar coleta<br></a>
-            <a href="/testes/paretico">Paretico<br></a>
-            <a href="/testes/saudavel">Saudavel<br></a>
-            <a href="/testes/forca">Força<br></a>
-            <a href="/graficos">Gráficos<br></a>
-            <a href="/dados">Dados<br></a>
-            <a href="/dev">Área Dev<br></a>            
-        </div> -->
         
     </main>
     <script>
-        function showContent(sectionId) {
+        function showContent(sectionId,overlay) {
             
-            document.getElementById("overlay").classList.add('show')
+            document.getElementById(overlay).classList.add('show')
             document.getElementById(sectionId).classList.add('show');
 
         }
 
-        function closePopup(sectionId) {
+        function closePopup(sectionId,overlay) {
             
-            document.getElementById("overlay").classList.remove('show')
+            document.getElementById(overlay).classList.remove('show')
             document.getElementById(sectionId).classList.remove('show');
 
         }
 
         function submitNome() {
-        document.getElementById("pacienteForm").submit();
-    }
+            document.getElementById("pacienteForm").submit();
+        }
+
+        let selectedPatientId = null; // Armazena o ID do paciente selecionado
+
+        function selectRow(row) {
+            // Remover a classe "selected" de todas as linhas
+            document.querySelectorAll("#patient-table tbody tr").forEach((tr) => {
+                tr.classList.remove("selected");
+            });
+
+            // Adicionar a classe "selected" à linha clicada
+            row.classList.add("selected");
+
+            // Armazenar o ID do paciente selecionado
+            selectedPatientId = row.getAttribute("data-id");
+
+            // Habilitar os botões de ação
+            document.getElementById("select-patient-btn").disabled = false;
+            document.getElementById("edit-patient-btn").disabled = false;
+            document.getElementById("delete-patient-btn").disabled = false;
+        }
+
+        function confirmSelection() {
+            if (selectedPatientId) {
+                // Redirecionar para a página de testes com o ID do paciente selecionado
+                window.location.href = `/testes?patient_id=${selectedPatientId}`;
+            } else {
+                alert("Nenhum paciente selecionado!");
+            }
+        }
+
+        function editPatient() {
+            if (selectedPatientId) {
+                // Fazer uma requisição para buscar os dados do paciente
+                fetch(`/get-patient/${selectedPatientId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Preencher os campos do formulário de edição com os dados do paciente
+                        document.querySelector("#edit-name").value = data.nome;
+                        document.querySelector("#edit-age").value = data.idade;
+                        document.querySelector("#edit-sex").value = data.sexo;
+                        document.querySelector("#edit-dominant").value = data.membro_dominante;
+                        document.querySelector("#edit-affected").value = data.membro_acometido;
+                        document.querySelector("#edit-index").value = selectedPatientId;
+
+                        // Mostrar o popup de edição
+                        showContent("edit-popup",'overlay2');
+                    })
+                    .catch((error) => console.error("Erro ao buscar os dados do paciente:", error));
+            } else {
+                alert("Nenhum paciente selecionado para editar!");
+            }
+        }
+
+        function deletePatient() {
+            if (selectedPatientId) {
+                if (confirm("Tem certeza que deseja excluir este paciente?")) {
+                    // Fazer uma solicitação DELETE para excluir o paciente
+                    fetch(`/delete-patient/${selectedPatientId}`, {
+                        method: "DELETE",
+                    })
+                        .then((response) => {
+                            if (response.ok) {
+                                alert("Paciente excluído com sucesso!");
+                                // Recarregar a página ou remover a linha da tabela
+                                document.querySelector(`tr[data-id="${selectedPatientId}"]`).remove();
+                                resetButtons();
+                            } else {
+                                alert("Erro ao excluir o paciente.");
+                            }
+                        })
+                        .catch((error) => console.error("Erro ao excluir o paciente:", error));
+                }
+            } else {
+                alert("Nenhum paciente selecionado para excluir!");
+            }
+        }
+
+        function submitEditForm() {
+            const editFormData = {
+                nome: document.querySelector("#edit-name").value,
+                idade: document.querySelector("#edit-age").value,
+                sexo: document.querySelector("#edit-sex").value,
+                membro_dominante: document.querySelector("#edit-dominant").value,
+                membro_acometido: document.querySelector("#edit-affected").value,
+            };
+
+            console.log("Enviando dados para atualização:", editFormData);
+
+            fetch(`/edit-patient/${selectedPatientId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(editFormData),
+            })
+            .then((response) => {
+                if (response.ok) {
+                    alert("Paciente atualizado com sucesso!");
+                    // Atualizar a tabela com os novos dados
+                    const row = document.querySelector(`tr[data-id="${selectedPatientId}"]`);
+                    row.children[0].textContent = editFormData.nome;
+                    row.children[1].textContent = editFormData.idade;
+                    row.children[2].textContent = editFormData.sexo;
+                    row.children[3].textContent = editFormData.membro_dominante;
+                    row.children[4].textContent = editFormData.membro_acometido;
+                    closePopup("edit-popup");
+                } else {
+                    alert("Erro ao atualizar o paciente.");
+                }
+            })
+            .catch((error) => console.error("Erro ao atualizar o paciente:", error));
+
+            closePopup('edit-popup','overlay2')
+        }
+
+        function resetButtons() {
+            // Resetar os botões para o estado inicial
+            selectedPatientId = null;
+            document.getElementById("select-patient-btn").disabled = true;
+            document.getElementById("edit-patient-btn").disabled = true;
+            document.getElementById("delete-patient-btn").disabled = true;
+        }
+
+
+        // let selectedPatientId = null;
+
+        // function selectRow(row) {
+        // // Remover a classe "selected" de todas as linhas
+        //     document.querySelectorAll("#patient-table tbody tr").forEach((tr) => {
+        //         tr.classList.remove("selected");
+        //     });
+
+        //     // Adicionar a classe "selected" à linha clicada
+        //     row.classList.add("selected");
+
+        //     // Armazenar o ID do paciente selecionado
+        //     selectedPatientId = row.getAttribute("data-id");
+
+        //     // Habilitar os botões de ação
+        //     document.getElementById("select-patient-btn").disabled = false;
+        //     document.getElementById("edit-patient-btn").disabled = false;
+        //     document.getElementById("delete-patient-btn").disabled = false;
+        // }
+
+        // function confirmSelection() {
+        //     if (selectedPatientId) {
+        //         // Simular o roteamento (substitua por lógica do Flask)
+        //         window.location.href = `/testes?patient_id=${selectedPatientId}`;
+        //     } else {
+        //         alert("Nenhum paciente selecionado!");
+        //     }
+        // }
+
+        // // Editar paciente
+        // function editPatient(index) {
+        //     fetch(`/get-patient/${index}`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         // Preencher os campos do formulário de edição com os dados do paciente
+        //         document.querySelector("#edit-name").value = data.nome;
+        //         document.querySelector("#edit-age").value = data.idade;
+        //         document.querySelector("#edit-sex").value = data.sexo;
+        //         document.querySelector("#edit-dominant").value = data.membro_dominante;
+        //         document.querySelector("#edit-affected").value = data.membro_acometido;
+        //         document.querySelector("#edit-index").value = index;
+
+        //         // Abrir o formulário de edição
+        //         togglePopup("edit-popup");
+        //     })
+        //     .catch(error => console.error("Erro ao buscar os dados do paciente:", error));
+        // }
+
+        // function deletePatient() {
+        //     if (selectedPatientId) {
+        //         if (confirm("Tem certeza que deseja excluir este paciente?")) {
+        //         // Fazer uma solicitação DELETE para excluir o paciente
+        //         fetch(`/delete-patient/${selectedPatientId}`, {
+        //             method: "DELETE",
+        //         })
+        //             .then((response) => {
+        //             if (response.ok) {
+        //                 alert("Paciente excluído com sucesso!");
+        //                 // Recarregar a página ou atualizar a tabela dinamicamente
+        //                 location.reload();
+        //             } else {
+        //                 alert("Erro ao excluir o paciente.");
+        //             }
+        //             })
+        //             .catch((error) => console.error("Erro ao excluir o paciente:", error));
+        //         }
+        //     } else {
+        //         alert("Nenhum paciente selecionado para excluir!");
+        //     }
+        // }
+
+        // // Submeter o formulário de edição
+        // function submitEditForm() {
+        //     const index = document.querySelector("#edit-index").value;
+        //     const data = {
+        //         nome: document.querySelector("#edit-name").value,
+        //         idade: parseInt(document.querySelector("#edit-age").value),
+        //         sexo: document.querySelector("#edit-sex").value,
+        //         membro_dominante: document.querySelector("#edit-dominant").value,
+        //         membro_acometido: document.querySelector("#edit-affected").value,
+        //     };
+
+        //     console.log("Enviando dados para atualização:", data);
+
+        //     fetch(`/edit-patient/${index}`, {
+        //         method: "PUT",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify(data),
+        //     })
+        //         .then((response) => {
+        //             if (!response.ok) {
+        //                 throw new Error("Erro ao atualizar o paciente");
+        //             }
+        //             return response.json();
+        //         })
+        //         .then((result) => {
+        //             console.log("Paciente atualizado com sucesso:", result);
+        //             location.reload(); // Atualiza a página para refletir as alterações
+        //         })
+        //         .catch((error) => {
+        //             console.error(error);
+        //             alert("Erro ao atualizar o paciente.");
+        //         });
+        // }
+
+
+
+
+</script>
     </script>
 </body>
 </html>

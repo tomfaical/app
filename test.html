@@ -1,0 +1,77 @@
+<script>
+    // Excluir paciente
+    function deletePatient(index) {
+        if (confirm("Deseja realmente excluir este paciente?")) {
+            fetch(`/delete-patient/${index}`, { method: "DELETE" })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Paciente excluído com sucesso.");
+                        location.reload(); // Recarrega a página para atualizar a tabela
+                    } else {
+                        alert("Erro ao excluir o paciente.");
+                    }
+                });
+        }
+    }
+
+
+
+    function editPatient() {
+        if (selectedPatientId) {
+            // Redirecionar para a rota de edição (ou abrir um popup de edição)
+            window.location.href = `/edit-patient/${selectedPatientId}`;
+        } else {
+            alert("Nenhum paciente selecionado para editar!");
+        }
+    }
+
+
+
+    // Editar paciente
+    function editPatient(index) {
+        fetch(`/get-patient/${index}`)
+            .then(response => response.json())
+            .then(data => {
+                // Preencher os campos do formulário de edição com os dados do paciente
+                document.querySelector("#edit-name").value = data.nome;
+                document.querySelector("#edit-age").value = data.idade;
+                document.querySelector("#edit-sex").value = data.sexo;
+                document.querySelector("#edit-dominant").value = data.membro_dominante;
+                document.querySelector("#edit-affected").value = data.membro_acometido;
+                document.querySelector("#edit-index").value = index;
+
+                // Abrir o formulário de edição
+                togglePopup("edit-popup");
+            })
+            .catch(error => console.error("Erro ao buscar os dados do paciente:", error));
+    }
+
+    // Submeter o formulário de edição
+    function submitEditForm() {
+        const index = document.querySelector("#edit-index").value;
+
+        const patientData = {
+            nome: document.querySelector("#edit-name").value,
+            idade: document.querySelector("#edit-age").value,
+            sexo: document.querySelector("#edit-sex").value,
+            membro_dominante: document.querySelector("#edit-dominant").value,
+            membro_acometido: document.querySelector("#edit-affected").value
+        };
+
+        fetch(`/edit-patient/${index}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(patientData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Paciente atualizado com sucesso.");
+                    location.reload(); // Recarrega a página para atualizar a tabela
+                } else {
+                    alert("Erro ao atualizar o paciente.");
+                }
+            });
+    }
+</script>
