@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NHPT+</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: steelblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .window {
+            background-color: aliceblue;
+            width: 150vmin;
+            height: 80vmin;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .window h2 {
+            color: steelblue;
+            margin-bottom: 20px;
+        }
+
+        .window form {
+            width: 100%;
+        }
+
+        .window form input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid steelblue;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .window form button {
+            width: 95%;
+            padding: 10px;
+            background-color: steelblue;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .window form button:hover {
+            background-color: #4682B4;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="window">
+            <h2>Login</h2>
+
+            <!-- Mensagem de erro (renderizada dinamicamente pelo Jinja2) -->
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <!-- Formulário de login -->
+            <form method="POST" action="/">
+                <input type="text" name="username" id="username" placeholder="Usuário" required>
+                <input type="password" name="password" id="password" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

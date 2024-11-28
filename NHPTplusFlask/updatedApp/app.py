@@ -5,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 import os
 from backend import ESPHandler
+from flask import jsonify
 
 esp_handler = ESPHandler()
 
@@ -44,8 +45,29 @@ teste_selecionado = ""
 dataHoje = datetime.now().strftime("%d/%m/%Y")
 nReg = 0
 
+# Rota para a tela de login
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Captura os valores enviados pelo formulário
+        username = request.form.get('username')  # Altere 'usuario' para 'username' conforme o id no HTML
+        password = request.form.get('password')  # Altere 'senha' para 'password' conforme o id no HTML
+
+        # Verifica se o usuário e senha estão corretos
+        if username == 'admin' and password == 'admin':
+            return redirect(url_for('home'))  # Redireciona para a página inicial (home)
+        else:
+            # Retorna uma mensagem de erro com a página de login
+            error_message = "Usuário ou senha inválidos. Tente novamente."
+            return render_template('[0.0] login.html', error=error_message)
+
+    # Para requisições GET, apenas exibe o formulário de login
+    return render_template('[0.0] login.html')
+
+    
+
 # Rota para a tela inicial
-@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
 def home():
     global paciente_nome
     if request.method == "POST":
@@ -60,7 +82,7 @@ def home():
         pacientes_df = pd.DataFrame(columns=['nome', 'idade', 'sexo', 'membroDominante', 'membroAcometido'])
 
     # Renderizar o template e passar os pacientes como contexto
-    return render_template('[0] base.html', pacientes=pacientes_df)
+    return render_template('[0.1] base.html', pacientes=pacientes_df)
 
 # Rota para cadastro do paciente
 @app.route('/cadastrarPaciente', methods=['POST'])
@@ -97,9 +119,7 @@ def cadastrar_paciente():
     # Redirecionar ou renderizar uma página de sucesso
     return redirect('/testes')  # Ajuste para onde você quer redirecionar
 
-from flask import jsonify
 
-from flask import jsonify
 
 # Deletar paciente
 @app.route('/delete-patient/<int:index>', methods=['DELETE'])
@@ -120,56 +140,6 @@ def get_patient(index):
         return jsonify(patient), 200
     return jsonify({"error": "Paciente não encontrado"}), 404
 
-# # Editar paciente
-# @app.route('/edit-patient/<int:index>', methods=['PUT'])
-# def edit_patient(index):
-#     global df
-#     if index < len(df):
-#         data = request.json
-#         df.loc[index] = [
-#             data['nome'],
-#             data['idade'],
-#             data['sexo'],
-#             data['membro_dominante'],
-#             data['membro_acometido']
-#         ]
-#         df.to_csv(CSV_FILE, index=False)
-#         return jsonify({"message": "Paciente atualizado com sucesso"}), 200
-#     return jsonify({"error": "Paciente não encontrado"}), 404
-
-#     global pacientes_df
-
-#     try:
-#         # Obtenha os dados enviados no request
-#         data = request.get_json()
-
-#         # Log para verificar os dados recebidos
-#         print(f"Recebido para editar paciente com ID {id}: {data}")
-
-#         if not data:
-#             return jsonify({'error': 'Nenhum dado enviado'}), 400
-
-#         # Verifique se o ID existe no DataFrame
-#         if id not in pacientes_df.index:
-#             print(f"Paciente com ID {id} não encontrado no DataFrame.")
-#             return jsonify({'error': 'Paciente não encontrado'}), 404
-
-#         # Atualize os campos no DataFrame
-#         for key in ['nome', 'idade', 'sexo', 'membro_dominante', 'membro_acometido']:
-#             if key in data:
-#                 print(f"Atualizando {key} para: {data[key]}")
-#                 pacientes_df.at[id, key] = data[key]
-
-#         # Salve o DataFrame no arquivo CSV
-#         print("Salvando alterações no arquivo CSV...")
-#         pacientes_df.to_csv('registros.csv', index=False)
-
-#         print(f"Paciente com ID {id} atualizado com sucesso.")
-#         return jsonify({'success': True}), 200
-
-#     except Exception as e:
-#         print(f"Erro ao editar paciente: {e}")
-#         return jsonify({'error': 'Erro no servidor', 'details': str(e)}), 500
 
 @app.route('/edit-patient/<int:index>', methods=['PUT'])
 def edit_patient(index):
@@ -263,7 +233,7 @@ def iniciar_coleta():
     )
 
 
-# Rota para a tela de Coleta do braço parético
+# Rota para a tela de Coleta do braço esquerdo
 @app.route("/testes/esquerdo")
 def coleta_esquerdo():
     global paciente_nome, dataHoje, coletaEsq, teste_selecionado
@@ -281,7 +251,7 @@ def incrementar_esquerdo():
     n_coleta_esq += 1
     return redirect(url_for("testes"))
 
-# Rota para a tela de Coleta do braço saudável
+# Rota para a tela de Coleta do braço direito
 @app.route("/testes/direito")
 def coleta_direito():
     global paciente_nome, dataHoje, coletaDir, teste_selecionado
