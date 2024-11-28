@@ -4,6 +4,10 @@ import threading
 from datetime import datetime
 import pandas as pd
 import os
+from backend import ESPHandler
+
+esp_handler = ESPHandler()
+
 
 app = Flask(__name__)
 
@@ -30,11 +34,11 @@ df = initialize_csv()
 
 # Variáveis globais
 paciente_nome = ""
-n_coleta_ruim = 0
-n_coleta_bom = 0
+n_coleta_esq = 0
+n_coleta_dir = 0
 n_coleta_forca = 0
-coletaRuim = False
-coletaBom = False
+coletaEsq = False
+coletaDir = False
 coletaForca = False
 teste_selecionado = ""
 dataHoje = datetime.now().strftime("%d/%m/%Y")
@@ -205,7 +209,7 @@ def edit_patient(index):
 # Rota para a tela de Coleta
 @app.route("/testes", methods=["GET", "POST"])
 def testes():
-    global df, paciente_nome, dataHoje, n_coleta_ruim, n_coleta_bom, n_coleta_forca, teste_selecionado
+    global df, paciente_nome, dataHoje, n_coleta_esq, n_coleta_dir, n_coleta_forca, teste_selecionado
     
     # Obter o parâmetro patient_id da URL
     patient_id = request.args.get('patient_id')
@@ -232,15 +236,15 @@ def testes():
         "[1.0] testes.html",
         paciente_nome=paciente_nome,
         dataHoje=dataHoje,
-        n_coleta_ruim=n_coleta_ruim,
-        n_coleta_bom=n_coleta_bom,
+        n_coleta_esq=n_coleta_esq,
+        n_coleta_dir=n_coleta_dir,
         n_coleta_forca=n_coleta_forca,
         teste_selecionado=teste_selecionado
     )
 
 @app.route("/testes/iniciar-coleta", methods=["GET", "POST"])
 def iniciar_coleta():
-    global paciente_nome, dataHoje, teste_selecionado, paciente_nome, n_coleta_ruim, n_coleta_bom, n_coleta_forca
+    global paciente_nome, dataHoje, teste_selecionado, paciente_nome, n_coleta_esq, n_coleta_dir, n_coleta_forca
     if request.method == "POST":
         data = request.get_json()
         teste_selecionado = data.get("teste_selecionado", "Nenhum teste selecionado")
@@ -253,46 +257,46 @@ def iniciar_coleta():
         paciente_nome=paciente_nome,
         dataHoje=dataHoje,
         teste_selecionado=teste_selecionado,
-        n_coleta_ruim=n_coleta_ruim,
-        n_coleta_bom=n_coleta_bom,
+        n_coleta_esq=n_coleta_esq,
+        n_coleta_dir=n_coleta_dir,
         n_coleta_forca=n_coleta_forca
     )
 
 
 # Rota para a tela de Coleta do braço parético
-@app.route("/testes/paretico")
-def coleta_paretico():
-    global paciente_nome, dataHoje, coletaRuim, teste_selecionado
+@app.route("/testes/esquerdo")
+def coleta_esquerdo():
+    global paciente_nome, dataHoje, coletaEsq, teste_selecionado
     return render_template(
-        "[1.2] paretico.html", 
+        "[1.2] esquerdo.html", 
         paciente_nome=paciente_nome,
-        coletaRuim=coletaRuim,
+        coletaEsq=coletaEsq,
         dataHoje=dataHoje,
         teste_selecionado=teste_selecionado
         )
 
-@app.route("/incrementar_paretico", methods=["POST"])
-def incrementar_paretico():
-    global n_coleta_ruim
-    n_coleta_ruim += 1
+@app.route("/incrementar_esquerdo", methods=["POST"])
+def incrementar_esquerdo():
+    global n_coleta_esq
+    n_coleta_esq += 1
     return redirect(url_for("testes"))
 
 # Rota para a tela de Coleta do braço saudável
-@app.route("/testes/saudavel")
-def coleta_saudavel():
-    global paciente_nome, dataHoje, coletaBom, teste_selecionado
+@app.route("/testes/direito")
+def coleta_direito():
+    global paciente_nome, dataHoje, coletaDir, teste_selecionado
     return render_template(
-        "[1.3] saudavel.html", 
+        "[1.3] direito.html", 
         paciente_nome=paciente_nome,
-        coletaBom=coletaBom,
+        coletaDir=coletaDir,
         dataHoje=dataHoje,
         teste_selecionado=teste_selecionado
         )
 
-@app.route("/incrementar_saudavel", methods=["POST"])
-def incrementar_saudavel():
-    global n_coleta_bom
-    n_coleta_bom += 1
+@app.route("/incrementar_direito", methods=["POST"])
+def incrementar_direito():
+    global n_coleta_dir
+    n_coleta_dir += 1
     return redirect(url_for("testes"))
 
 # Rota para a tela de Coleta da força
@@ -328,6 +332,47 @@ def tabelas():
 def area_dev():
     global paciente_nome
     return render_template("[4.0] area-dev.html", paciente_nome=paciente_nome)
+
+
+# BackEnd implementation
+
+@app.route('/connect', methods=['POST'])
+def connect_to_esp():
+    port = request.json.get('port')
+    success = esp_handler.connect_to_esp(port)
+    if success:
+        return jsonify({"message": "Conexão estabelecida com sucesso"}), 200
+    return jsonify({"error": "Falha ao conectar"}), 500
+
+@app.route('/disconnect', methods=['POST'])
+def disconnect_from_esp():
+    esp_handler.disconnect_from_esp()
+    return jsonify({"message": "Conexão encerrada"}), 200
+
+@app.route('/receive-data', methods=['POST'])
+def receive_data():
+    condicao = request.json.get('condicao', 'indefinido')
+    success = esp_handler.receive_data(condicao)
+    if success:
+        return jsonify({"message": "Dados recebidos e armazenados"}), 200
+    return jsonify({"error": "Erro ao receber dados"}), 500
+
+@app.route('/save-data', methods=['POST'])
+def save_data():
+    filename = request.json.get('filename', 'dados_coleta.csv')
+    esp_handler.save_data_to_csv(filename)
+    return jsonify({"message": f"Dados salvos em {filename}"}), 200
+
+@app.route('/load-data', methods=['POST'])
+def load_data():
+    filename = request.json.get('filename', 'dados_coleta.csv')
+    esp_handler.load_data_from_csv(filename)
+    return jsonify({"message": f"Dados carregados de {filename}"}), 200
+
+
+
+
+
 
 # Iniciar o servidor Flask
 def iniciar_servidor():

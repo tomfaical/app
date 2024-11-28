@@ -323,6 +323,9 @@
             
         </div>
         
+        <div>
+            <a href="/testes/esquerdo" style="position: absolute;bottom: 0px;">esquerdo</a>
+        </div>
     </main>
     <script>
         function showContent(sectionId,overlay) {
@@ -464,114 +467,6 @@
             document.getElementById("edit-patient-btn").disabled = true;
             document.getElementById("delete-patient-btn").disabled = true;
         }
-
-
-        // let selectedPatientId = null;
-
-        // function selectRow(row) {
-        // // Remover a classe "selected" de todas as linhas
-        //     document.querySelectorAll("#patient-table tbody tr").forEach((tr) => {
-        //         tr.classList.remove("selected");
-        //     });
-
-        //     // Adicionar a classe "selected" à linha clicada
-        //     row.classList.add("selected");
-
-        //     // Armazenar o ID do paciente selecionado
-        //     selectedPatientId = row.getAttribute("data-id");
-
-        //     // Habilitar os botões de ação
-        //     document.getElementById("select-patient-btn").disabled = false;
-        //     document.getElementById("edit-patient-btn").disabled = false;
-        //     document.getElementById("delete-patient-btn").disabled = false;
-        // }
-
-        // function confirmSelection() {
-        //     if (selectedPatientId) {
-        //         // Simular o roteamento (substitua por lógica do Flask)
-        //         window.location.href = `/testes?patient_id=${selectedPatientId}`;
-        //     } else {
-        //         alert("Nenhum paciente selecionado!");
-        //     }
-        // }
-
-        // // Editar paciente
-        // function editPatient(index) {
-        //     fetch(`/get-patient/${index}`)
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         // Preencher os campos do formulário de edição com os dados do paciente
-        //         document.querySelector("#edit-name").value = data.nome;
-        //         document.querySelector("#edit-age").value = data.idade;
-        //         document.querySelector("#edit-sex").value = data.sexo;
-        //         document.querySelector("#edit-dominant").value = data.membro_dominante;
-        //         document.querySelector("#edit-affected").value = data.membro_acometido;
-        //         document.querySelector("#edit-index").value = index;
-
-        //         // Abrir o formulário de edição
-        //         togglePopup("edit-popup");
-        //     })
-        //     .catch(error => console.error("Erro ao buscar os dados do paciente:", error));
-        // }
-
-        // function deletePatient() {
-        //     if (selectedPatientId) {
-        //         if (confirm("Tem certeza que deseja excluir este paciente?")) {
-        //         // Fazer uma solicitação DELETE para excluir o paciente
-        //         fetch(`/delete-patient/${selectedPatientId}`, {
-        //             method: "DELETE",
-        //         })
-        //             .then((response) => {
-        //             if (response.ok) {
-        //                 alert("Paciente excluído com sucesso!");
-        //                 // Recarregar a página ou atualizar a tabela dinamicamente
-        //                 location.reload();
-        //             } else {
-        //                 alert("Erro ao excluir o paciente.");
-        //             }
-        //             })
-        //             .catch((error) => console.error("Erro ao excluir o paciente:", error));
-        //         }
-        //     } else {
-        //         alert("Nenhum paciente selecionado para excluir!");
-        //     }
-        // }
-
-        // // Submeter o formulário de edição
-        // function submitEditForm() {
-        //     const index = document.querySelector("#edit-index").value;
-        //     const data = {
-        //         nome: document.querySelector("#edit-name").value,
-        //         idade: parseInt(document.querySelector("#edit-age").value),
-        //         sexo: document.querySelector("#edit-sex").value,
-        //         membro_dominante: document.querySelector("#edit-dominant").value,
-        //         membro_acometido: document.querySelector("#edit-affected").value,
-        //     };
-
-        //     console.log("Enviando dados para atualização:", data);
-
-        //     fetch(`/edit-patient/${index}`, {
-        //         method: "PUT",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify(data),
-        //     })
-        //         .then((response) => {
-        //             if (!response.ok) {
-        //                 throw new Error("Erro ao atualizar o paciente");
-        //             }
-        //             return response.json();
-        //         })
-        //         .then((result) => {
-        //             console.log("Paciente atualizado com sucesso:", result);
-        //             location.reload(); // Atualiza a página para refletir as alterações
-        //         })
-        //         .catch((error) => {
-        //             console.error(error);
-        //             alert("Erro ao atualizar o paciente.");
-        //         });
-        // }
 
 
 

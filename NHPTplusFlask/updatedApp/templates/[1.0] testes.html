@@ -129,28 +129,28 @@
       <a href="/home" style="text-decoration: none;">
         <img src="/static/logo_dark.svg" alt="Logo NHPT+" width="70px" style="position: absolute;top: 13px;">
       </a>
-      <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;">    
+      <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;" >    
           <button class="nav-button active" onclick="location.href='/testes'">
             <div style="display: flex;">
-              <div><img src="/static/pencil.svg" alt="test icon" width="15px"></div>
+              <div><img src="/static/pencil.svg" alt="test icon" width="15px" class="filter-steelblue"></div>
               <div style="margin-left: 5px;">Testes</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/graficos'">
             <div style="display: flex;">
-              <div><img src="/static/graph.svg" alt="test icon" width="15px"></div>
+              <div><img src="/static/graph.svg" alt="test icon" width="15px" class="filter-aliceblue"></div>
               <div style="margin-left: 5px;">Gráficos</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/dados'">
             <div style="display: flex;">
-              <div><img src="/static/dados.svg" alt="test icon" width="13px"></div>
+              <div><img src="/static/dados.svg" alt="test icon" width="13px" class="filter-aliceblue"></div>
               <div style="margin-left: 5px;">Dados</div>
             </div>
           </button>
           <button class="nav-button nav-hover" onclick="location.href='/area-dev'">
             <div style="display: flex;">
-              <div><img src="/static/dev.svg" alt="test icon" width="15px"></div>
+              <div><img src="/static/dev.svg" alt="test icon" width="15px" class="filter-aliceblue"></div>
               <div style="margin-left: 5px;">Área dev</div>
             </div>
           </button>
@@ -172,8 +172,8 @@
 
 
         <div id="dropOptions" class="dropContent">
-          <button type="button" onclick="setTeste('NHPT Braço Parético')">NHPT Braço Parético</button>
-          <button type="button" onclick="setTeste('NHPT Braço Saudável')">NHPT Braço Saudável</button>
+          <button type="button" onclick="setTeste('NHPT Braço Esquerdo')">NHPT Braço Esquerdo</button>
+          <button type="button" onclick="setTeste('NHPT Braço Direito')">NHPT Braço Direito</button>
           <button type="button" onclick="setTeste('Teste de Força')">Teste de Força</button>
         </div>
       
@@ -182,8 +182,8 @@
     <div class="text" style="position: fixed; bottom: 0px; color: steelblue;">
         <p>
             Data: {{dataHoje}} <br>
-            Coletas de braço parético: {{n_coleta_ruim}} <br>
-            Coletas de braço saudável: {{n_coleta_bom}} <br>
+            Coletas de braço esquerdo: {{n_coleta_esq}} <br>
+            Coletas de braço direito: {{n_coleta_dir}} <br>
             Coletas de força: {{n_coleta_forca}} <br>
         </p>
     </div>
