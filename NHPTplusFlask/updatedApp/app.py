@@ -6,8 +6,13 @@ import pandas as pd
 import os
 from backend import ESPHandler
 from flask import jsonify
+import time
+from threading import Thread
+
 
 esp_handler = ESPHandler()
+espState = [0,0,0]
+
 
 
 app = Flask(__name__)
@@ -118,8 +123,6 @@ def cadastrar_paciente():
     
     # Redirecionar ou renderizar uma página de sucesso
     return redirect('/testes')  # Ajuste para onde você quer redirecionar
-
-
 
 # Deletar paciente
 @app.route('/delete-patient/<int:index>', methods=['DELETE'])
@@ -232,11 +235,58 @@ def iniciar_coleta():
         n_coleta_forca=n_coleta_forca
     )
 
+def update_esp_state():
+    """
+    Função para atualizar o estado de espState baseado na conexão e dados recebidos dos dispositivos.
+    """
+    global espState
+
+    # Tenta conectar ao dispositivo via serial
+    ser = connect_to_serial(SERIAL_PORT, BAUDRATE)
+    if ser:
+        # Atualiza para [1, 0, 0] (conectado)
+        espState = [1, 0, 0]
+        print(f"Estado atualizado para: {espState}")
+
+        # Tenta receber dados do ESP32
+        df_esp = receive_data_from_esp32_serial(ser, condicao="parético", iterador=1)  # Ajuste condicao e iterador conforme necessário
+        if isinstance(df_esp, pd.DataFrame):
+            # Atualiza para [1, 1, 0] (coletando dados do ESP32)
+            espState = [1, 1, 0]
+            print(f"Estado atualizado para: {espState}")
+
+            # Tenta receber dados do Arduino
+            df_arduino = receive_data_from_arduino(ser, condicao="parético", iterador=1)  # Ajuste condicao e iterador conforme necessário
+            if isinstance(df_arduino, pd.DataFrame):
+                # Atualiza para [1, 1, 1] (coletando dados de ambos os dispositivos)
+                espState = [1, 1, 1]
+                print(f"Estado atualizado para: {espState}")
+
+        ser.close()  # Certifica-se de fechar a conexão serial
+    else:
+        print("Erro ao conectar ao dispositivo.")
+
+@app.route('/get-esp-state', methods=['GET'])
+def get_esp_state():
+    """
+    Endpoint para retornar o estado atual de espState.
+    """
+    return jsonify(espState)
+
+def start_update_thread():
+    """
+    Inicia um thread separado para executar a função de atualização de estado.
+    """
+    update_thread = threading.Thread(target=update_esp_state, daemon=True)
+    update_thread.start()
 
 # Rota para a tela de Coleta do braço esquerdo
 @app.route("/testes/esquerdo")
 def coleta_esquerdo():
-    global paciente_nome, dataHoje, coletaEsq, teste_selecionado
+    global espState, paciente_nome, dataHoje, coletaEsq, teste_selecionado
+    print("Iniciando a atualização do estado do ESP...")
+    start_state_update_thread()
+    print(espState)
     return render_template(
         "[1.2] esquerdo.html", 
         paciente_nome=paciente_nome,
@@ -352,5 +402,6 @@ def iniciar_servidor():
 if __name__ == "__main__":
     app.jinja_env.globals.update(enumerate=enumerate)
     threading.Thread(target=iniciar_servidor, daemon=True).start()
+    start_update_thread()
     webview.create_window("NHPT+", "http://127.0.0.1:5000")
     webview.start()

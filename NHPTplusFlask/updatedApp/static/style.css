@@ -10,6 +10,10 @@
     filter: brightness(0) saturate(100%) invert(52%) sepia(91%) saturate(2583%) hue-rotate(85deg) brightness(125%) contrast(124%);
 }
 
+.filter-gray{
+    filter: brightness(0) saturate(100%) brightness(10%);
+}
+
 /* debug */
 .filter-red {
     filter: brightness(0) saturate(100%) invert(26%) sepia(76%) saturate(6007%) hue-rotate(352deg) brightness(110%) contrast(139%);

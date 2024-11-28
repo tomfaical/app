@@ -6,230 +6,244 @@
     <title>NHPT+ : Coleta Braço Esquerdo</title>
     <link rel="stylesheet" href="/static/style.css">
     <style>
-        /* *{
-            color: steelblue
-        } */
-
         header {
             padding: 20px;
             border-bottom: 1px solid steelblue;
-        }
-
-        header.filled{
             background-color: steelblue;
-        }
-
-        .nav-button {
-            background-color: transparent;
-            border-radius: 40px;
-            color: aliceblue;
-            position: relative;
-            top:20%;
-            margin: 0 10px;
-            height: 32px;
-            border: none;
-            padding: 10px;
-        }
-
-        .nav-hover:hover { 
-            background-color: rgba(217, 237, 255,0.8);
-            color: steelblue;
-            cursor: pointer;
-        }
-
-        .active { 
-            background-color: aliceblue;
-            color: steelblue;
         }
 
         body {
             background-color: aliceblue;
         }
-        
-        .patient-banner{
+
+        .patient-banner {
             padding: 9px;
             background-color: skyblue;
             font-weight: bold;
-            color: midnightblue
-        } 
+            color: midnightblue;
+        }
 
-
-        .btn{
+        .btn {
             background-color: aliceblue;
             color: steelblue;
             border: 2px solid steelblue;
-            border-radius: 200px;        
+            border-radius: 200px;
+            padding: 5px 20px;
+            cursor: pointer;
         }
 
-        .btn:hover,.btn:focus {
+        .btn:hover,
+        .btn:focus {
             background-color: rgba(217, 237, 255);
         }
 
-    </style>
+        .confirmation-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: steelblue;
+            font-weight: bold;
+        }
 
+        .action-buttons {
+            display: none;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #voltarBtn {
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="filled">
+    <header>
         <div style="display: block;">
-          <a href="/home" style="text-decoration: none;">
-            <img src="/static/logo_dark.svg" alt="Logo NHPT+" width="70px" style="position: absolute;top: 13px;">
-          </a>
-          <div style="display: flex; position: absolute; top: 0px; right: 20px;height: 58px;" >    
-              <button class="nav-button active" onclick="location.href='/testes'">
-                <div style="display: flex;">
-                  <div><img src="/static/pencil.svg" alt="test icon" width="15px" class="filter-steelblue"></div>
-                  <div style="margin-left: 5px;">Testes</div>
-                </div>
-              </button>
-              <button class="nav-button nav-hover" onclick="location.href='/graficos'">
-                <div style="display: flex;">
-                  <div><img src="/static/graph.svg" alt="test icon" width="15px" class="filter-aliceblue"></div>
-                  <div style="margin-left: 5px;">Gráficos</div>
-                </div>
-              </button>
-              <button class="nav-button nav-hover" onclick="location.href='/dados'">
-                <div style="display: flex;">
-                  <div><img src="/static/dados.svg" alt="test icon" width="13px" class="filter-aliceblue"></div>
-                  <div style="margin-left: 5px;">Dados</div>
-                </div>
-              </button>
-              <button class="nav-button nav-hover" onclick="location.href='/area-dev'">
-                <div style="display: flex;">
-                  <div><img src="/static/dev.svg" alt="test icon" width="15px" class="filter-aliceblue"></div>
-                  <div style="margin-left: 5px;">Área dev</div>
-                </div>
-              </button>
-          </div>
-      </div>  
+            <a href="/home" style="text-decoration: none;">
+                <img src="/static/logo_dark.svg" alt="Logo NHPT+" width="70px" style="position: absolute; top: 13px;">
+            </a>
+        </div>
     </header>
 
     <main>
-        <!-- banner -->
-        <div class="patient-banner">
-            Paciente: {{ paciente_nome }}
-        </div>
+        <!-- Banner -->
+        <div class="patient-banner">Paciente: {{ paciente_nome }}</div>
 
+        <!-- Testando e botões -->
         <div style="margin-top: 30px; display: flex; align-items: center; justify-content: space-between;">
-            <!-- Texto Testando -->
-            <div style="color: steelblue; font-weight: bold; font-size: small;">
-                Testando NHPT Braço Esquerdo...
+            <div style="color: steelblue; font-weight: bold; font-size: small;">Testando NHPT Braço Esquerdo...</div>
+            <div id="mainButtons" style="display: flex; gap: 10px;">
+                <button id="encerrarColeta" class="btn" onclick="encerrarColeta()">Encerrar coleta</button>
             </div>
-        
-            <!-- Botão Encerrar Coleta -->
-            <button id="encerrarColeta" class="btn" style="font-weight: bold; font-size: 12px; padding: 4px; color: steelblue;" onclick="encerrarColeta(this)">
-                Encerrar coleta
-            </button>
-        </div>
-        
-        <!-- Ícones em linha abaixo do texto -->
-        <div style="display: flex; justify-content: left; align-items: left; gap: 20px; margin-top: 10px;">
-            <div>
-                <img src="/static/link.svg" alt="Connection" style="width: 20px; height: 20px;">
+            <div id="actionButtons" class="action-buttons">
+                <button id="saveTestBtn" class="btn" onclick="saveTest()">Salvar teste</button>
+                <button id="discardTestBtn" class="btn" onclick="discardTest()">Descartar teste</button>
             </div>
-            <div>
-                <img src="/static/gear.svg" alt="Processing" style="width: 20px; height: 20px;">
-            </div>
-            <div>
-                <img src="/static/input.svg" alt="Input" style="width: 20px; height: 20px;">
-            </div>
+            
+            <!-- Texto de confirmação -->
+            <div id="confirmationText" class="confirmation-text" style="display: none;"></div>
+            <button id="voltarBtn" class="btn" onclick="voltar()">Voltar</button>
         </div>
 
-        <div style="margin-top: 10px; width: 45%; height: 0; padding-bottom: 40px; position: relative; left: 7px; background-color: transparent; color:steelblue">
-            <div class="timer" id="cronometro">00:00.000</div>
-        </div>      
-        
-
-        <button style="margin-bottom: 10px;" onclick="start()"> start</button>
-
-        <!-- graficos -->
-        <div style="margin-top: 0px;">
-                    
-            <div style="display: inline-block;width: 45%; height: 0; padding-bottom: 45%; margin-left: 7px; background-color: red;">
-            <!-- grafico -->
+        <!-- Ícones -->
+        <div style="display: flex; justify-content: left; align-items: center; gap: 20px; margin-top: 10px;">
+            <div id="icon-link">
+                <img src="/static/link.svg" alt="Connection" class="filter-gray" style="width: 20px; height: 20px;">
             </div>
-           
-            <div style="display: inline-block;width: 45%; height: 0; padding-bottom: 45%; position:relative;; left: 8%; background-color: red;">
-            <!-- grafico -->
-            </div>        
-
+            <div id="icon-gear">
+                <img src="/static/gear.svg" alt="Processing" class="filter-gray" style="width: 20px; height: 20px;">
+            </div>
+            <div id="icon-input">
+                <img src="/static/input.svg" alt="Input" class="filter-gray" style="width: 20px; height: 20px;">
+            </div>
         </div>
-        
+
+        <!-- Texto de estado -->
+        <div id="status-text" style="font-size: 14px; color: steelblue; margin-top: 10px;">Conectando ao ESP</div>
+
+        <!-- Cronômetro -->
+        <div style="margin-top: 10px; width: 45%; height: 0; padding-bottom: 40px;">
+            <div id="cronometro" style="visibility: hidden;">00:00.000</div>
+        </div>
     </main>
 
     <script>
-        function encerrarColeta(button) {
-            button.remove()
-            coletaEsq = false
-            // update na var de encerrar coleta do braço esquerdo
+        let coletaEsq = true;
+        let saveTestFlag = false;
+        let discardTestFlag = false;
+        let timerInterval = null;
+        let startTime = 0;
+        let elapsedTime = 0;
+
+        let espState = { link: false, init: false, input: false };
+
+        function encerrarColeta() {
+            coletaEsq = false;
+            stopTimer();
+            document.getElementById("mainButtons").style.display = "none";
+            document.getElementById("actionButtons").style.display = "flex";
         }
 
-        function start(){
-        coletaEsq = true
+        function saveTest() {
+            saveTestFlag = true;
+            document.getElementById("actionButtons").style.display = "none"; // Esconde os botões
+            const confirmationText = document.getElementById("confirmationText");
+            confirmationText.textContent = "Teste salvo!";
+            confirmationText.style.display = "block"; // Mostra o texto
+            showVoltarButton();
+        }
+
+        function discardTest() {
+            discardTestFlag = true;
+            document.getElementById("actionButtons").style.display = "none"; // Esconde os botões
+            const confirmationText = document.getElementById("confirmationText");
+            confirmationText.textContent = "Teste descartado!";
+            confirmationText.style.display = "block"; // Mostra o texto
+            showVoltarButton();
         }
 
 
-
-
-        // 
-        // 
-        // 
-        //         
-        // Cronometro
-
-        // Variável para controlar o cronômetro
-        let coletaEsq = false;
-
-        // Variáveis internas
-        let timerInterval; // Armazena o intervalo
-        let startTime; // Marca o início do cronômetro
-        let elapsedTime = 0; // Tempo acumulado em milissegundos
-
-        // Função para formatar o tempo como MM:SS.mmm
-        function formatTime(ms) {
-            const minutes = Math.floor(ms / 60000);
-            const seconds = Math.floor((ms % 60000) / 1000);
-            const milliseconds = ms % 1000;
-            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+        function showVoltarButton() {
+            document.getElementById("actionButtons").style.display = "none";
+            document.getElementById("voltarBtn").style.display = "block";
         }
 
-        // Função para atualizar o cronômetro
+        function voltar() {
+            window.location.href = "/testes";
+        }
+        
+        // Função para buscar o estado do ESP do backend
+        async function fetchEspState() {
+            try {
+                const response = await fetch('/get-esp-state'); // Faz requisição ao backend
+                if (response.ok) {
+                    const state = await response.json(); // Recebe o estado como [0, 0, 0]
+                    espState.link = state[0] === 1; // Atualiza estado de link
+                    espState.init = state[1] === 1; // Atualiza estado de init
+                    espState.input = state[2] === 1; // Atualiza estado de input
+                    updateIconsAndText(); // Atualiza os ícones e texto na tela
+
+                    // Interrompe o polling se todos os estados estiverem concluídos e o cronômetro já estiver rodando
+                    if (espState.link && espState.init && espState.input) {
+                        clearInterval(pollingInterval); // Para o polling
+                        console.log("Polling interrompido: estado completo alcançado.");
+                    }
+                } else {
+                    console.error("Erro na resposta do servidor:", response.status);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar estado do ESP:", error);
+            }
+        }
+
+        // Atualiza o estado do ESP periodicamente (Polling)
+        function startEspStatePolling(interval = 1000) {
+            pollingInterval = setInterval(fetchEspState, interval); // Requisição a cada `interval` ms
+        }
+
+        // Função para atualizar os ícones e o texto com base no estado de espState
+        function updateIconsAndText() {
+            const linkIcon = document.querySelector("#icon-link img");
+            const gearIcon = document.querySelector("#icon-gear img");
+            const inputIcon = document.querySelector("#icon-input img");
+            const statusText = document.querySelector("#status-text");
+
+            // Atualiza ícones e texto com base nos estados
+            if (!espState.link) {
+                linkIcon.classList.replace("filter-lime", "filter-gray");
+                statusText.textContent = "Conectando ao ESP...";
+            } else if (!espState.init) {
+                linkIcon.classList.replace("filter-gray", "filter-lime");
+                gearIcon.classList.replace("filter-lime", "filter-gray");
+                statusText.textContent = "Iniciando coleta...";
+            } else if (!espState.input) {
+                gearIcon.classList.replace("filter-gray", "filter-lime");
+                inputIcon.classList.replace("filter-lime", "filter-gray");
+                statusText.textContent = "Preparando para receber dados...";
+            } else {
+                inputIcon.classList.replace("filter-gray", "filter-lime");
+                statusText.textContent = "Teste iniciado!";
+                startTimer();
+            }
+        }
+
+        // Inicia o polling quando a página é carregada
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchEspState(); // Busca o estado inicial
+            startEspStatePolling(1000); // Atualiza o estado a cada 1 segundo
+        });
+
+
+        function startTimer() {
+            const cronometro = document.getElementById('cronometro');
+            cronometro.style.visibility = 'visible';
+            if (!timerInterval) {
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 10);
+            }
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                elapsedTime += Date.now() - startTime;
+            }
+        }
+
         function updateTimer() {
             const now = Date.now();
             const timePassed = now - startTime + elapsedTime;
             document.getElementById('cronometro').textContent = formatTime(timePassed);
         }
 
-        // Função para iniciar o cronômetro
-        function startTimer() {
-            if (!timerInterval) {
-                startTime = Date.now(); // Marca o momento em que o cronômetro foi iniciado
-                timerInterval = setInterval(updateTimer, 10); // Atualiza a cada 10ms
-            }
+        function formatTime(ms) {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            const milliseconds = ms % 1000;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
         }
-
-        // Função para parar o cronômetro
-        function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                elapsedTime += Date.now() - startTime; // Acumula o tempo já decorrido
-            }
-        }
-
-        // Monitorar a variável "coletaEsq"
-        setInterval(() => {
-            if (coletaEsq && !timerInterval) {
-                startTimer(); // Inicia o cronômetro quando coletaEsq é true
-            } else if (!coletaEsq && timerInterval) {
-                stopTimer(); // Para o cronômetro quando coletaEsq é false
-            }
-        }, 100); // Verifica a cada 100ms
-
-
-
-
-        
     </script>
 </body>
 </html>
