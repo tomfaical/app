@@ -175,6 +175,37 @@ def edit_patient(index):
         return jsonify({'error': 'Erro no servidor'}), 500
 
 
+# Rota para a tela de Coleta
+@app.route("/coletaTemp")
+def coleta():
+    global df, paciente_nome, dataHoje, n_coleta_esq, n_coleta_dir, n_coleta_forca, teste_selecionado
+    
+    # Obter o parâmetro patient_id da URL
+    patient_id = request.args.get('patient_id')
+
+    # Verificar se patient_id é válido
+    if patient_id is not None and patient_id.isdigit():
+        patient_id = int(patient_id)
+
+        if 0 <= patient_id < len(df):
+            # Atualizar o nome do paciente com base no ID
+            paciente_nome = df.iloc[patient_id]['nome']
+        else:
+            paciente_nome = "Paciente não encontrado"
+    else:
+        paciente_nome = "Nenhum paciente selecionado"
+    
+    return render_template(
+        "[1.0.1] coletaTemp.html",
+        paciente_nome=paciente_nome,
+        dataHoje=dataHoje,
+        n_coleta_esq=n_coleta_esq,
+        n_coleta_dir=n_coleta_dir,
+        n_coleta_forca=n_coleta_forca,
+        teste_selecionado=teste_selecionado
+    )
+
+
 
 # Rota para a tela de Coleta
 @app.route("/testes", methods=["GET", "POST"])
@@ -211,6 +242,7 @@ def testes():
         n_coleta_forca=n_coleta_forca,
         teste_selecionado=teste_selecionado
     )
+
 
 @app.route("/testes/iniciar-coleta", methods=["GET", "POST"])
 def iniciar_coleta():

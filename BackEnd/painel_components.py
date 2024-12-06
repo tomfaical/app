@@ -7,12 +7,22 @@ import time
 import matplotlib.pyplot as plt
 import altair as alt
 import plotly.express as px
+import os
+import re
+
 
 
 
 
 
 def start_session_states():
+    if "resgatar_paciente" not in st.session_state:
+        st.session_state.resgatar_paciente = False
+    if "novo_paciente" not in st.session_state:
+        st.session_state.novo_paciente = False
+    if "selected_patient" not in st.session_state:
+        st.session_state.selected_patient = None
+    
     if "ser" not in st.session_state:
         st.session_state.ser = None
     if "coletas" not in st.session_state:
@@ -29,18 +39,21 @@ def start_session_states():
     if "iterador_saudavel_forca" not in st.session_state:
         st.session_state.iterador_saudavel_forca = 1  # Iterador para braço saudável
 
-    if "dfs" not in st.session_state:
-        st.session_state.dfs = {}  # Um dicionário para armazenar dfs
+    if "dfs_aceleracao" not in st.session_state:
+        st.session_state.dfs_aceleracao = {}          # Um dicionário para armazenar dfs
+    if "dfs_forca" not in st.session_state:
+        st.session_state.dfs_forca = {}               # Um dicionário para armazenar dfs
     if "nome_paciente" not in st.session_state:
-        st.session_state.nome_paciente = None
+        st.session_state.nome_paciente = ''
     if "df_aceleracao" not in st.session_state:  
         st.session_state.df_aceleracao = pd.DataFrame(columns=[
             "tempo", "ax", "ay", "az",'a_abs', 
             'jerk_x', 'jerk_y', 'jerk_z', 'jerk_abs', 
-            "condicao", "n_coleta"
+            "condicao", 'lado', 'lateralidade', "n_coleta"
             ]) 
     if "df_forca" not in st.session_state:
-        st.session_state.df_forca = pd.DataFrame(columns=['tempo', 'forca', 'condicao', 'n_coleta'])
+        st.session_state.df_forca = pd.DataFrame(columns=[
+            'tempo', 'forca', 'df_dt', 'condicao', 'lado', 'lateralidade', 'n_coleta'])
 
     if 'condicao_memb_esq' not in st.session_state:
         st.session_state.condicao_memb_esq = None
@@ -51,6 +64,8 @@ def start_session_states():
     if 'lateralidade_memb_dir' not in st.session_state:
         st.session_state.lateralidade_memb_dir = None
     
+    if "index_paciente" not in st.session_state:
+        st.session_state.index_paciente = None
     if "index_condicao_esq" not in st.session_state:
         st.session_state.index_condicao_esq = None
     if "index_lateralidade_esq" not in st.session_state:
@@ -74,7 +89,7 @@ def connect_to_serial(port, baudrate):
     
 
 # Função genérica para iniciar a coleta
-def start_collection(condicao, teste):
+def start_collection(condicao, teste, lado, lateralidade):
     st.session_state.coletando = True
 
     if teste == 'Jerk':
@@ -85,7 +100,7 @@ def start_collection(condicao, teste):
         )
 
         st.success(f"Iniciando coleta para braço {condicao} (Coleta {iterador})")
-        receive_data_from_esp32_serial(condicao)
+        receive_data_from_esp32_serial(condicao, lado, lateralidade)
 
 
     if teste == 'Força':
@@ -96,12 +111,12 @@ def start_collection(condicao, teste):
         )
 
         st.success(f"Iniciando coleta para braço {condicao} (Coleta {iterador})")
-        receive_data_from_arduino(condicao)
+        receive_data_from_arduino(condicao, lado, lateralidade)
     
 
 
 # Função para receber dados do ESP32
-def receive_data_from_esp32_serial(condicao):
+def receive_data_from_esp32_serial(condicao, lado , lateralidade):
     ser = st.session_state.ser
     if not ser:
         st.error("Conexão serial não encontrada. Certifique-se de estar conectado.")
@@ -122,9 +137,12 @@ def receive_data_from_esp32_serial(condicao):
         next_row_2 = None
 
         df_temp = pd.DataFrame(columns=[
-            "tempo", "ax", "ay", "az", "a_abs", "jerk_x", "jerk_y", "jerk_z", "jerk_abs", "condicao", "n_coleta"
+            "tempo", "ax", "ay", "az", "a_abs", 
+            "jerk_x", "jerk_y", "jerk_z", "jerk_abs", 
+            "condicao", 'lado', 'lateralidade', "n_coleta"
         ])
         chart_placeholder_aceleracao = st.empty()
+        
 
         while st.session_state.coletando == True:
             data = ser.readline().decode("utf-8").strip()
@@ -139,17 +157,17 @@ def receive_data_from_esp32_serial(condicao):
                     jerk_x = jerk_y = jerk_z = jerk_abs = None
                     
                     #Derivada comum:
-                    if previous_row_1 is not None:
-                        delta_t = (
-                            datetime.strptime(timestamp, '%d/%m/%Y %H:%M:%S.%f') 
-                            - datetime.strptime(previous_row_1["tempo"], '%d/%m/%Y %H:%M:%S.%f')
-                        ).total_seconds()
+                    # if previous_row_1 is not None:
+                    #     delta_t = (
+                    #         datetime.strptime(timestamp, '%d/%m/%Y %H:%M:%S.%f') 
+                    #         - datetime.strptime(previous_row_1["tempo"], '%d/%m/%Y %H:%M:%S.%f')
+                    #     ).total_seconds()
 
-                        if delta_t > 0:  # Evita divisão por zero
-                            jerk_x = (ax - previous_row_1["ax"]) / delta_t
-                            jerk_y = (ay - previous_row_1["ay"]) / delta_t
-                            jerk_z = (az - previous_row_1["az"]) / delta_t
-                            jerk_abs = (jerk_x**2 + jerk_y**2 + jerk_z**2)**0.5
+                    #     if delta_t > 0:  # Evita divisão por zero
+                    #         jerk_x = (ax - previous_row_1["ax"]) / delta_t
+                    #         jerk_y = (ay - previous_row_1["ay"]) / delta_t
+                    #         jerk_z = (az - previous_row_1["az"]) / delta_t
+                    #         jerk_abs = (jerk_x**2 + jerk_y**2 + jerk_z**2)**0.5
 
                     
 
@@ -169,11 +187,10 @@ def receive_data_from_esp32_serial(condicao):
 
                             # Atualiza os valores de jerk para previous_row_1 no DataFrame
                             st.session_state.df_aceleracao.loc[st.session_state.df_aceleracao.index[-2], ['jerk_x', 'jerk_y', 'jerk_z', 'jerk_abs']] = [
-                                jerk_x, jerk_y, jerk_z, jerk_abs
-                            ]
+                                jerk_x, jerk_y, jerk_z, jerk_abs]
+                            
                             df_temp.loc[df_temp.index[-2], ['jerk_x', 'jerk_y', 'jerk_z', 'jerk_abs']] = [
-                                jerk_x, jerk_y, jerk_z, jerk_abs
-                            ]
+                                jerk_x, jerk_y, jerk_z, jerk_abs]
 
 
 
@@ -190,6 +207,8 @@ def receive_data_from_esp32_serial(condicao):
                         "jerk_z": None,    
                         "jerk_abs": None,
                         "condicao": condicao,
+                        "lado": lado,
+                        'lateralidade': lateralidade,
                         "n_coleta": iterador,
                     }
                     st.session_state.df_aceleracao = pd.concat(
@@ -204,14 +223,14 @@ def receive_data_from_esp32_serial(condicao):
                     
                     ### LINE_PLOT SIMPLES
                     with chart_placeholder_aceleracao.container():
-                        show_plots(df_temp)
+                        show_plots_aceleracao(df_temp)
                     
                     previous_row_2 = previous_row_1
                     previous_row_1 = current_row
                     current_row = next_row_1
                     next_row_1 = next_row_2
                     next_row_2 = new_row
-                    store_data()
+                    store_data('Jerk')
                     
                 except (IndexError, ValueError):
                     st.error(f"Erro ao processar os dados: {data}")
@@ -222,7 +241,7 @@ def receive_data_from_esp32_serial(condicao):
         st.info(f"Conexão serial fechada para braço {condicao}")
 
 
-def receive_data_from_arduino(condicao):
+def receive_data_from_arduino(condicao, lado, lateralidade):
     ser = st.session_state.ser  # Conexão serial já estabelecida fora da função
     if not ser:
         st.error("Conexão serial não encontrada. Certifique-se de que o Arduino está conectado.")
@@ -237,8 +256,17 @@ def receive_data_from_arduino(condicao):
 
     st.session_state.coletando = True
     st.info(f"Iniciando coleta de força ({condicao}, Coleta {iterador})...")
+    previous_row_1 = None 
+    previous_row_2 = None 
+    current_row = None
+    next_row_1 = None
+    next_row_2 = None
 
     chart_placeholder_forca = st.empty()
+    df_temp = pd.DataFrame(columns=[
+            'tempo', 'forca', 'df_dt', 'condicao', 'lado', 'lateralidade', 'n_coleta'
+            ])
+    
     try:
         while st.session_state.coletando:
             data = ser.readline().decode("utf-8").strip()
@@ -249,21 +277,55 @@ def receive_data_from_arduino(condicao):
                         forca = float(data.split(":")[1].strip().split(" ")[0])  
                         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S.%f")[:-3]
 
+                        #Derivada de alta acurácia centrada (5 pontos):
+                        if previous_row_1 is not None and previous_row_2 is not None and next_row_1 is not None and next_row_2 is not None:
+                            
+                            delta_t = (
+                                datetime.strptime(next_row_2["tempo"], '%d/%m/%Y %H:%M:%S.%f') 
+                                - datetime.strptime(previous_row_2["tempo"], '%d/%m/%Y %H:%M:%S.%f')
+                            ).total_seconds()
+
+                            if delta_t > 0:  # Evita divisão por zero
+                                df_dt = (-next_row_2['forca'] 
+                                        + 8*next_row_1['forca'] 
+                                        - 8*previous_row_1['forca'] 
+                                        + previous_row_2['forca']) / (12 * delta_t)
+                                
+                                # Atualiza os valores de jerk para previous_row_1 no DataFrame
+                                st.session_state.df_forca.loc[st.session_state.df_forca.index[-2], ['df_dt']] = [df_dt]
+                                
+                                df_temp.loc[df_temp.index[-2], ['df_dt']] = [df_dt]
+
                         # Adiciona os dados ao DataFrame
                         new_row = {
                             "tempo": timestamp,
                             "forca": forca,
+                            "df_dt": None,
                             "condicao": condicao,
-                            "n_coleta": iterador,
+                            'lado': lado,
+                            'lateralidade': lateralidade,
+                            "n_coleta": iterador
                         }
                         st.session_state.df_forca = pd.concat(
                             [st.session_state.df_forca, pd.DataFrame([new_row])],
                             ignore_index=True,
                         )
 
-                        # Exibe os dados recebidos
-                        st.write(st.session_state.df_forca)
+                        df_temp = pd.concat(
+                            [df_temp, pd.DataFrame([new_row])],
+                            ignore_index=True,
+                        )
 
+                        with chart_placeholder_forca.container():
+                            show_plots_forca(df_temp)
+                        
+                        previous_row_2 = previous_row_1
+                        previous_row_1 = current_row
+                        current_row = next_row_1
+                        next_row_1 = next_row_2
+                        next_row_2 = new_row
+                        store_data('Força')
+                        
                 except (IndexError, ValueError) as e:
                     st.error(f"Erro ao processar os dados: {data}")
 
@@ -308,7 +370,7 @@ def disconnect_from_serial():
         st.warning("Nenhuma conexão ativa.")
 
 
-def show_plots(df):
+def show_plots_aceleracao(df):
     n = 500
     chart_data = df.tail(n).copy()
     
@@ -327,45 +389,73 @@ def show_plots(df):
     st.line_chart(chart_data2, color= purple, x_label='Tempo', y_label= 'Aceleração (m/s^2)')
     
 
-def store_data():
-    df_completo = st.session_state.df_aceleracao
+def show_plots_forca(df):
+    n = 100
+    chart_data = df.tail(n)
+    st.bar_chart(
+        chart_data, x= 'tempo', y= 'forca', 
+        x_label='Tempo', y_label='Força (N)')
+    st.bar_chart(
+        chart_data, x= 'tempo', y= 'df_dt', 
+        x_label='Tempo', y_label='Taxa de Desenvolvimento de Força (N/s)')
 
+
+def store_data(teste):
+    if teste == 'Jerk':
+        df_completo = st.session_state.df_aceleracao
+    elif teste == 'Força':
+        df_completo = st.session_state.df_forca
+    
     for i in range((st.session_state.iterador_saudavel_acc)+1):
         nome_novo_df = f"df_coleta_{i}_saudavel"
         novo_df = df_completo[(df_completo['n_coleta'] == i) & (df_completo['condicao'] == 'saudável')]
 
-        if not novo_df.empty:
-            st.session_state.dfs[nome_novo_df] = novo_df
-            # st.success(f"df {nome_novo_df} criado com sucesso!")
+        if not novo_df.empty and df_completo.equals(st.session_state.df_aceleracao):
+            st.session_state.dfs_aceleracao[nome_novo_df] = novo_df
+        elif not novo_df.empty and df_completo.equals(st.session_state.df_forca):
+            st.session_state.dfs_forca[nome_novo_df] = novo_df
         
+
     for j in range((st.session_state.iterador_paretico_acc)+1):
         nome_novo_df = f"df_coleta_{j}_paretico"
         novo_df = df_completo[(df_completo['n_coleta'] == j) & (df_completo['condicao'] == 'parético')]
-        if not novo_df.empty:
-            st.session_state.dfs[nome_novo_df] = novo_df
-            # st.success(f"df {nome_novo_df} criado com sucesso!")
+        
+        if not novo_df.empty and df_completo.equals(st.session_state.df_aceleracao):
+            st.session_state.dfs_aceleracao[nome_novo_df] = novo_df
+        elif not novo_df.empty and df_completo.equals(st.session_state.df_forca):
+            st.session_state.dfs_forca[nome_novo_df] = novo_df
 
 
-def show_dfs(condicao):
-    for nome_df, df in st.session_state.dfs.items():
-        if nome_df.endswith(condicao):  
-            st.subheader(f"Coleta {df['n_coleta'].iloc[0]}:", help= df['condicao'].iloc[0], anchor= False)
-            st.write(df)  
-            st.divider()
+def show_dfs(condicao, teste):
+    if teste == 'Jerk':
+        if condicao == 'Parético':
+            condicao = 'paretico'
+        if condicao == 'Saudável':
+            condicao = 'saudavel'
 
+        for nome_df, df in st.session_state.dfs_aceleracao.items():
+            if nome_df.endswith(condicao):  
+                st.subheader(f"Coleta {df['n_coleta'].iloc[0]}:", help= df['condicao'].iloc[0], anchor= False)
+                st.write(df)  
+                st.divider()
+    
+    if teste == 'Força':
+        if condicao.lower() == 'parético':
+            iterador = st.session_state.iterador_paretico_forca
+        if condicao.lower() == 'saudável':
+            iterador = st.session_state.iterador_saudavel_forca
 
-# Botão de download para os gráficos
-def download_graphic():
-    # Exemplo fictício para incluir dados de gráfico
-    st.download_button(
-        label="Download do Gráfico",
-        data="Gráfico gerado em tempo real",
-        file_name="grafico.txt"
-    )
-
+        for num_coleta in range(0 ,iterador+1):
+            df = st.session_state.df_forca
+            df = df[(df['condicao'] == condicao.lower()) & (df['n_coleta'] == num_coleta)]
+            if not df.empty:
+                st.subheader(f"Coleta {num_coleta}:", help= condicao.upper(), anchor= False)
+                st.write(df)  
+                st.divider()
+    
 
 # Botão de download para o DataFrame
-def download_dataframe(df):
+def make_csv(df):
     csv = df.to_csv(index=False)
     return csv
 
@@ -375,30 +465,46 @@ def change_names(name):
     return name
 
 
+@st.dialog("TEM CERTEZA QUE DESEJA VOLTAR?", width='large')
+def recomecar_operacao():
+    # if st.button("Sair e salvar dados.", type= 'primary'):
+    #     st.rerun()  
+    if st.button("Retomar análise atual.", type= 'primary'):
+        st.rerun()
+    if st.button("Sair.", type= 'primary'):
+        st.session_state.resgatar_paciente = False
+        st.session_state.novo_paciente = False
+        st.session_state.nome_paciente = ''
+        st.rerun()
 
 
-def criar_forca():
-    import pandas as pd
-    import random
-    from datetime import datetime, timedelta
-    columns = ["tempo", "peso", "forca", "condicao", "n_coleta"]
-    df = pd.DataFrame(columns=columns)
-    
-    # Gera 100 linhas de dados aleatórios
-    for i in range(100):
-        timestamp = (datetime.now() - timedelta(seconds=i)).strftime("%d/%m/%Y %H:%M:%S.%f")[:-3]
-        peso = random.uniform(0, 100)  # Massa em kg
-        forca = peso * 9.81  # Força em Newtons
-        condicao = random.choice(["parético", "saudável"])
-        n_coleta = random.randint(1, 10)
+def read_all_csvs(folder_path):
+    try:
+        # Lista todos os arquivos na pasta
+        all_files = os.listdir(folder_path)
+
+        # Filtra apenas os arquivos com extensão .csv
+        csv_files = []
+        for file in all_files:
+            if file.endswith('.csv'):
+                csv_files.append(file)
         
-        new_row = {
-            "tempo": timestamp,
-            "peso": peso,
-            "forca": forca,
-            "condicao": condicao,
-            "n_coleta": n_coleta,
-        }
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    
-    return df
+        patient_files = {}
+        for file in csv_files:
+            identifier = extrair_nome(file)
+            if identifier:
+                if identifier not in patient_files:
+                    patient_files[identifier] = []
+                patient_files[identifier].append(file)
+
+        return patient_files
+    except FileNotFoundError:
+        st.error("A pasta especificada não foi encontrada.")
+        return {}
+
+
+def extrair_nome(file_name):
+    match = re.search(r'(jerk|forca)_(.*?)\.csv', file_name)  # Procura por 'jerk_' ou 'forca_' e captura o identificador
+    if match:
+        return match.group(2)  # Retorna apenas o identificador extraído
+    return None

@@ -17,8 +17,8 @@
 
         .window {
             background-color: aliceblue;
-            width: 150vmin;
-            height: 80vmin;
+            width: 400px;
+            height: 400px;
             border-radius: 20px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -26,7 +26,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
+            padding: 20px;
         }
 
         .window h2 {
@@ -36,6 +36,9 @@
 
         .window form {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .window form input {
@@ -62,11 +65,6 @@
             background-color: #4682B4;
         }
 
-        .error {
-            color: red;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
@@ -74,11 +72,7 @@
         <div class="window">
             <h2>Login</h2>
 
-            <!-- Mensagem de erro (renderizada dinamicamente pelo Jinja2) -->
-            {% if error %}
-                <div class="error">{{ error }}</div>
-            {% endif %}
-
+            
             <!-- Formulário de login -->
             <form method="POST" action="/">
                 <input type="text" name="username" id="username" placeholder="Usuário" required>
